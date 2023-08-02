@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
+
 global ajustes_graf_SPI
 ajustes_graf_SPI = 5
 
