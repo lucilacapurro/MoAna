@@ -64,14 +64,14 @@ class Ui_Configuraciones(object):
         self.centralwidget.setObjectName("centralwidget")
 
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(304, 134, 751, 431))
+        self.frame.setGeometry(QtCore.QRect(254, 134, 851, 431))
         self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
 
         self.groupBox_Configuraciones = QtWidgets.QGroupBox(self.frame)
-        self.groupBox_Configuraciones.setGeometry(QtCore.QRect(20, 10, 601, 411))
+        self.groupBox_Configuraciones.setGeometry(QtCore.QRect(20, 10, 701, 411))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.groupBox_Configuraciones.setFont(font)
@@ -80,7 +80,7 @@ class Ui_Configuraciones(object):
         self.groupBox_Configuraciones.setObjectName("groupBox_Configuraciones")
 
         self.pushButton_GuardarConfiguraciones = QtWidgets.QPushButton(self.groupBox_Configuraciones)
-        self.pushButton_GuardarConfiguraciones.setGeometry(QtCore.QRect(510, 370, 81, 31))
+        self.pushButton_GuardarConfiguraciones.setGeometry(QtCore.QRect(610, 370, 81, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -100,7 +100,7 @@ class Ui_Configuraciones(object):
         self.label_Configuraciones.setObjectName("label_Configuraciones")
 
         self.label_Farmaco = QtWidgets.QLabel(self.groupBox_Configuraciones)
-        self.label_Farmaco.setGeometry(QtCore.QRect(10, 70, 581, 31))
+        self.label_Farmaco.setGeometry(QtCore.QRect(10, 70, 681, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_Farmaco.setFont(font)
@@ -108,30 +108,42 @@ class Ui_Configuraciones(object):
         self.label_Farmaco.setAlignment(QtCore.Qt.AlignCenter)
         self.label_Farmaco.setObjectName("label_Farmaco")
 
-        self.comboBoxFarmaco = QtWidgets.QComboBox(self.groupBox_Configuraciones)
-        self.comboBoxFarmaco.setGeometry(QtCore.QRect(10, 110, 161, 31))
+        self.comboBox_Farmaco = QtWidgets.QComboBox(self.groupBox_Configuraciones)
+        self.comboBox_Farmaco.setGeometry(QtCore.QRect(10, 110, 192, 31))
         font = QtGui.QFont()
         font.setFamily("MS Shell Dlg 2")
         font.setPointSize(9)
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
-        self.comboBoxFarmaco.setFont(font)
-        self.comboBoxFarmaco.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.comboBoxFarmaco.setEditable(True)
-        self.comboBoxFarmaco.setMaxVisibleItems(7)
-        self.comboBoxFarmaco.setObjectName("comboBoxFarmaco")
-        self.comboBoxFarmaco.addItems(farmacos)
+        self.comboBox_Farmaco.setFont(font)
+        self.comboBox_Farmaco.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.comboBox_Farmaco.setEditable(True)
+        self.comboBox_Farmaco.setMaxVisibleItems(7)
+        self.comboBox_Farmaco.setObjectName("comboBox_Farmaco")
+        self.comboBox_Farmaco.addItems(farmacos)
 
         self.lineEdit_Farmaco = QtWidgets.QLineEdit(self.groupBox_Configuraciones)
-        self.lineEdit_Farmaco.setGeometry(QtCore.QRect(180, 110, 341, 31))
+        self.lineEdit_Farmaco.setGeometry(QtCore.QRect(280, 110, 341, 31))
         self.lineEdit_Farmaco.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.lineEdit_Farmaco.setText("")
         self.lineEdit_Farmaco.setFrame(False)
         self.lineEdit_Farmaco.setObjectName("lineEdit_Farmaco")
+        
+        self.pushButton_BorrarFarmaco = QtWidgets.QPushButton(self.groupBox_Configuraciones)
+        self.pushButton_BorrarFarmaco.setGeometry(QtCore.QRect(210, 110, 61, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_BorrarFarmaco.setFont(font)
+        self.pushButton_BorrarFarmaco.setStyleSheet("background-color: rgb(243, 243, 243);")
+        self.pushButton_BorrarFarmaco.setObjectName("pushButton_BorrarFarmaco")
+        self.pushButton_BorrarFarmaco.setEnabled(False)
+        self.pushButton_BorrarFarmaco.clicked.connect(lambda: self.funcBorrarEvento(0))
 
         self.pushButton_AgregarFarmaco = QtWidgets.QPushButton(self.groupBox_Configuraciones)
-        self.pushButton_AgregarFarmaco.setGeometry(QtCore.QRect(530, 110, 61, 31))
+        self.pushButton_AgregarFarmaco.setGeometry(QtCore.QRect(630, 110, 61, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -143,14 +155,14 @@ class Ui_Configuraciones(object):
         self.pushButton_AgregarFarmaco.clicked.connect(self.funcAgregarFarmacos)
 
         self.lineEdit_ProcQuirurgico = QtWidgets.QLineEdit(self.groupBox_Configuraciones)
-        self.lineEdit_ProcQuirurgico.setGeometry(QtCore.QRect(180, 210, 341, 31))
+        self.lineEdit_ProcQuirurgico.setGeometry(QtCore.QRect(280, 210, 341, 31))
         self.lineEdit_ProcQuirurgico.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.lineEdit_ProcQuirurgico.setText("")
         self.lineEdit_ProcQuirurgico.setFrame(False)
         self.lineEdit_ProcQuirurgico.setObjectName("lineEdit_ProcQuirurgico")
 
         self.label_ProcQuirurgico = QtWidgets.QLabel(self.groupBox_Configuraciones)
-        self.label_ProcQuirurgico.setGeometry(QtCore.QRect(10, 170, 581, 31))
+        self.label_ProcQuirurgico.setGeometry(QtCore.QRect(10, 170, 681, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_ProcQuirurgico.setFont(font)
@@ -159,7 +171,7 @@ class Ui_Configuraciones(object):
         self.label_ProcQuirurgico.setObjectName("label_ProcQuirurgico")
 
         self.comboBox_ProcQuirurgico = QtWidgets.QComboBox(self.groupBox_Configuraciones)
-        self.comboBox_ProcQuirurgico.setGeometry(QtCore.QRect(10, 210, 161, 31))
+        self.comboBox_ProcQuirurgico.setGeometry(QtCore.QRect(10, 210, 192, 31))
         font = QtGui.QFont()
         font.setFamily("MS Shell Dlg 2")
         font.setPointSize(9)
@@ -173,8 +185,20 @@ class Ui_Configuraciones(object):
         self.comboBox_ProcQuirurgico.setObjectName("comboBox_ProcQuirurgico")
         self.comboBox_ProcQuirurgico.addItems(procedimientos)
 
+        self.pushButton_BorrarProcQuirurgico = QtWidgets.QPushButton(self.groupBox_Configuraciones)
+        self.pushButton_BorrarProcQuirurgico.setGeometry(QtCore.QRect(210, 210, 61, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_BorrarProcQuirurgico.setFont(font)
+        self.pushButton_BorrarProcQuirurgico.setStyleSheet("background-color: rgb(243, 243, 243);")
+        self.pushButton_BorrarProcQuirurgico.setObjectName("pushButton_BorrarProcQuirurgico")
+        self.pushButton_BorrarProcQuirurgico.setEnabled(False)
+        self.pushButton_BorrarProcQuirurgico.clicked.connect(lambda: self.funcBorrarEvento(1))
+        
         self.pushButton_AgregarProcQuirurgico = QtWidgets.QPushButton(self.groupBox_Configuraciones)
-        self.pushButton_AgregarProcQuirurgico.setGeometry(QtCore.QRect(530, 210, 61, 31))
+        self.pushButton_AgregarProcQuirurgico.setGeometry(QtCore.QRect(630, 210, 61, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -186,14 +210,14 @@ class Ui_Configuraciones(object):
         self.pushButton_AgregarProcQuirurgico.clicked.connect(self.funcAgregarProcQuirurgico)
         
         self.lineEdit_Intercurrencia = QtWidgets.QLineEdit(self.groupBox_Configuraciones)
-        self.lineEdit_Intercurrencia.setGeometry(QtCore.QRect(180, 310, 341, 31))
+        self.lineEdit_Intercurrencia.setGeometry(QtCore.QRect(280, 310, 341, 31))
         self.lineEdit_Intercurrencia.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.lineEdit_Intercurrencia.setText("")
         self.lineEdit_Intercurrencia.setFrame(False)
         self.lineEdit_Intercurrencia.setObjectName("lineEdit_Intercurrencia")
 
         self.label_Intercurrencia = QtWidgets.QLabel(self.groupBox_Configuraciones)
-        self.label_Intercurrencia.setGeometry(QtCore.QRect(10, 270, 581, 31))
+        self.label_Intercurrencia.setGeometry(QtCore.QRect(10, 270, 681, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_Intercurrencia.setFont(font)
@@ -202,7 +226,7 @@ class Ui_Configuraciones(object):
         self.label_Intercurrencia.setObjectName("label_Intercurrencia")
 
         self.comboBox_Intercurrencia = QtWidgets.QComboBox(self.groupBox_Configuraciones)
-        self.comboBox_Intercurrencia.setGeometry(QtCore.QRect(10, 310, 161, 31))
+        self.comboBox_Intercurrencia.setGeometry(QtCore.QRect(10, 310, 192, 31))
         font = QtGui.QFont()
         font.setFamily("MS Shell Dlg 2")
         font.setPointSize(9)
@@ -216,8 +240,20 @@ class Ui_Configuraciones(object):
         self.comboBox_Intercurrencia.setObjectName("comboBox_Intercurrencia")
         self.comboBox_Intercurrencia.addItems(intercurrencias)
 
+        self.pushButton_BorrarIntercurrencia = QtWidgets.QPushButton(self.groupBox_Configuraciones)
+        self.pushButton_BorrarIntercurrencia.setGeometry(QtCore.QRect(210, 310, 61, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_BorrarIntercurrencia.setFont(font)
+        self.pushButton_BorrarIntercurrencia.setStyleSheet("background-color: rgb(243, 243, 243);")
+        self.pushButton_BorrarIntercurrencia.setObjectName("pushButton_BorrarIntercurrencia")
+        self.pushButton_BorrarIntercurrencia.setEnabled(False)
+        self.pushButton_BorrarIntercurrencia.clicked.connect(lambda: self.funcBorrarEvento(2))
+
         self.pushButton_AgregarIntercurrencia = QtWidgets.QPushButton(self.groupBox_Configuraciones)
-        self.pushButton_AgregarIntercurrencia.setGeometry(QtCore.QRect(530, 310, 61, 31))
+        self.pushButton_AgregarIntercurrencia.setGeometry(QtCore.QRect(630, 310, 61, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -231,25 +267,28 @@ class Ui_Configuraciones(object):
         self.lineEdit_Farmaco.raise_()
         self.label_Configuraciones.raise_()
         self.label_Farmaco.raise_()
+        self.comboBox_Farmaco.raise_()
         self.pushButton_GuardarConfiguraciones.raise_()
+        self.pushButton_BorrarFarmaco.raise_()
         self.pushButton_AgregarFarmaco.raise_()
         self.lineEdit_ProcQuirurgico.raise_()
         self.label_ProcQuirurgico.raise_()
         self.comboBox_ProcQuirurgico.raise_()
+        self.pushButton_BorrarProcQuirurgico.raise_()
         self.pushButton_AgregarProcQuirurgico.raise_()
         self.lineEdit_Intercurrencia.raise_()
         self.label_Intercurrencia.raise_()
         self.comboBox_Intercurrencia.raise_()
+        self.pushButton_BorrarIntercurrencia.raise_()
         self.pushButton_AgregarIntercurrencia.raise_()
-        self.comboBoxFarmaco.raise_()
-
+        
         # Conecta la señal selectionChanged del QLineEdit para abrir el teclado virtual
         self.lineEdit_Farmaco.selectionChanged.connect(self.funcAbrirTecladoFarmaco)
         self.lineEdit_ProcQuirurgico.selectionChanged.connect(self.funcAbrirTecladoProcQuirurgico)
         self.lineEdit_Intercurrencia.selectionChanged.connect(self.funcAbrirTecladoIntercurrencia)
 
         self.pushButton_VolverConfiguraciones = QtWidgets.QPushButton(self.frame)
-        self.pushButton_VolverConfiguraciones.setGeometry(QtCore.QRect(630, 380, 111, 41))
+        self.pushButton_VolverConfiguraciones.setGeometry(QtCore.QRect(730, 380, 111, 41))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -267,10 +306,15 @@ class Ui_Configuraciones(object):
         Configuraciones.setMenuBar(self.menubar)
 
         self.retranslateUi(Configuraciones)
+        self.comboBox_Farmaco.setCurrentIndex(0)
         self.comboBox_ProcQuirurgico.setCurrentIndex(0)
         self.comboBox_Intercurrencia.setCurrentIndex(0)
-        self.comboBoxFarmaco.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Configuraciones)
+
+        self.comboBox_Farmaco.currentIndexChanged.connect(lambda: self.funcHabilitarBorrar(0))
+        self.comboBox_ProcQuirurgico.currentIndexChanged.connect(lambda: self.funcHabilitarBorrar(1))
+        self.comboBox_Intercurrencia.currentIndexChanged.connect(lambda: self.funcHabilitarBorrar(2))
+
 
     #############################################################################################################################
     #FUNCIONES: 
@@ -305,8 +349,48 @@ class Ui_Configuraciones(object):
         current_text = self.lineEdit_Intercurrencia.text()  
         self.lineEdit_Intercurrencia.setText(current_text + char)
 
+    def funcHabilitarBorrar(self, tipo_evento):
+        if tipo_evento == 0: # farmaco
+            if self.comboBox_Farmaco.currentText() != '-':
+                self.pushButton_BorrarFarmaco.setEnabled(True)
+            else:
+                self.pushButton_BorrarFarmaco.setEnabled(False)
+        elif tipo_evento == 1: # proc quirurgico
+            if self.comboBox_ProcQuirurgico.currentText() != '-':
+                self.pushButton_BorrarProcQuirurgico.setEnabled(True)
+            else:
+                self.pushButton_BorrarProcQuirurgico.setEnabled(False)
+        else: # intercurrencia
+            if self.comboBox_Intercurrencia.currentText() != '-':
+                self.pushButton_BorrarIntercurrencia.setEnabled(True)
+            else:
+                self.pushButton_BorrarIntercurrencia.setEnabled(False)
+
+    def funcBorrarEvento(self, tipo_evento):
+        if tipo_evento == 0: # farmaco
+            index_borrar = self.comboBox_Farmaco.currentIndex()
+            evento_borrar = self.comboBox_Farmaco.currentText()
+            global farmacos
+            farmacos.remove(evento_borrar)
+            self.comboBox_Farmaco.removeItem(index_borrar)
+            self.comboBox_Farmaco.setCurrentIndex(0)
+        elif tipo_evento == 1: # proc quirurgico
+            index_borrar = self.comboBox_ProcQuirurgico.currentIndex()
+            evento_borrar = self.comboBox_ProcQuirurgico.currentText()
+            global procedimientos
+            procedimientos.remove(evento_borrar)
+            self.comboBox_ProcQuirurgico.removeItem(index_borrar)
+            self.comboBox_ProcQuirurgico.setCurrentIndex(0)
+        else: # intercurrencia
+            index_borrar = self.comboBox_Intercurrencia.currentIndex()
+            evento_borrar = self.comboBox_Intercurrencia.currentText()
+            global intercurrencias
+            intercurrencias.remove(evento_borrar)
+            self.comboBox_Intercurrencia.removeItem(index_borrar)
+            self.comboBox_Intercurrencia.setCurrentIndex(0)
+
     def funcAgregarFarmacos(self):
-        self.comboBoxFarmaco.addItem(self.lineEdit_Farmaco.text())
+        self.comboBox_Farmaco.addItem(self.lineEdit_Farmaco.text())
         global farmacos
         farmacos.append(self.lineEdit_Farmaco.text())
         global habilitar_teclado
@@ -364,12 +448,15 @@ class Ui_Configuraciones(object):
         self.lineEdit_Farmaco.setPlaceholderText(_translate("Configuraciones", "Ingrese un nuevo fármaco analgésico"))
         self.label_Configuraciones.setText(_translate("Configuraciones", "Personalización de eventos"))
         self.label_Farmaco.setText(_translate("Configuraciones", "Fármaco analgésicos"))
+        self.pushButton_BorrarFarmaco.setText(_translate("Configuraciones", "Borrar"))
         self.pushButton_AgregarFarmaco.setText(_translate("Configuraciones", "Agregar"))
         self.lineEdit_ProcQuirurgico.setPlaceholderText(_translate("Configuraciones", "Ingrese un nuevo procedimiento quirúrgico"))
         self.label_ProcQuirurgico.setText(_translate("Configuraciones", "Procedimientos quirúrgicos"))
+        self.pushButton_BorrarProcQuirurgico.setText(_translate("Configuraciones", "Borrar"))
         self.pushButton_AgregarProcQuirurgico.setText(_translate("Configuraciones", "Agregar"))
         self.lineEdit_Intercurrencia.setPlaceholderText(_translate("Configuraciones", "Ingrese una nueva intercurrencia"))
         self.label_Intercurrencia.setText(_translate("Configuraciones", "Intercurrencias"))
+        self.pushButton_BorrarIntercurrencia.setText(_translate("Configuraciones", "Borrar"))
         self.pushButton_AgregarIntercurrencia.setText(_translate("Configuraciones", "Agregar"))
         self.pushButton_VolverConfiguraciones.setText(_translate("Configuraciones", "Volver al \n""Menú Principal"))
 
