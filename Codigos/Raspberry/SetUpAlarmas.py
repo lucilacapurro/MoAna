@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox, QSpinBox
+from PyQt5.QtWidgets import QMessageBox, QSpinBox, QDesktopWidget
 
 global alarmas
 alarmas = [50, 20, 15] #seteamos los valores default de las alarmas
@@ -121,7 +121,7 @@ class Ui_SetUpAlarmas(object):
             pop_up.setIcon(QMessageBox.Critical)
             pop_up.setWindowTitle("Alerta")
             pop_up.setText("El valor 'Mínimo SPI' ingresado es mayor al valor 'Máximo SPI' ingresado. Reingréselos.")
-            pop_up.move(350, 420)
+            pop_up.move(600, 600)
             pop_up.exec_()
 
         else:
@@ -136,7 +136,7 @@ class Ui_SetUpAlarmas(object):
             pop_up.setWindowTitle("Alarma configurada")
             pop_up.setText("La alarma fue configurada correctamente. Puede cerrar la ventana de configuración.")
             pop_up.setStandardButtons(QMessageBox.Ok)
-            pop_up.move(350, 420)
+            pop_up.move(600, 600)
             pop_up.exec_()
 
 #############################################################################################################################
@@ -162,5 +162,13 @@ if __name__ == "__main__":
     SetUpAlarmas = QtWidgets.QMainWindow()
     ui = Ui_SetUpAlarmas()
     ui.setupUi(SetUpAlarmas)
+    
+     # Center the window on the screen
+    screen_rect = app.desktop().availableGeometry(SetUpAlarmas)
+    window_rect = SetUpAlarmas.frameGeometry()
+    center_x = (screen_rect.width() - window_rect.width()) // 2
+    center_y = (screen_rect.height() - window_rect.height()) // 2
+    SetUpAlarmas.move(center_x, center_y)
+    
     SetUpAlarmas.show()
     sys.exit(app.exec_())

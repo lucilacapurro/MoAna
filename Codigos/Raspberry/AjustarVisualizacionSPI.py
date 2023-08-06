@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
 
 global ajustes_graf_SPI
 ajustes_graf_SPI = 5
@@ -97,7 +97,7 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
         pop_up.setWindowTitle("Ajustes configurados")
         pop_up.setText("Los ajustes del gráfico de SPI fueron configurados correctamente. Puede cerrar la ventana de configuración.")
         pop_up.setStandardButtons(QMessageBox.Ok)
-        pop_up.move(350, 420)
+        pop_up.move(600, 600)
         pop_up.exec_()
 
 #############################################################################################################################
@@ -127,5 +127,13 @@ if __name__ == "__main__":
     AjusteVisualizacionGraficaSPI = QtWidgets.QMainWindow()
     ui = Ui_AjusteVisualizacionGraficaSPI()
     ui.setupUi(AjusteVisualizacionGraficaSPI)
+    
+     # Center the window on the screen
+    screen_rect = app.desktop().availableGeometry(AjusteVisualizacionGraficaSPI)
+    window_rect = AjusteVisualizacionGraficaSPI.frameGeometry()
+    center_x = (screen_rect.width() - window_rect.width()) // 2
+    center_y = (screen_rect.height() - window_rect.height()) // 2
+    AjusteVisualizacionGraficaSPI.move(center_x, center_y)
+    
     AjusteVisualizacionGraficaSPI.show()
     sys.exit(app.exec_())

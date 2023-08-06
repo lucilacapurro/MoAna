@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
 from PyQt5.QtCore import Qt
 import os
 import pandas as pd
@@ -29,14 +29,14 @@ class Ui_Configuraciones(object):
         self.windowInicio = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.windowInicio)
-        self.windowInicio.show()
+        self.windowInicio.showMaximized()
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_Farmaco(self, target_edit):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Farmaco) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 325)
+        self.virtual_keyboard.move(515, 550)
         self.pushButton_AgregarFarmaco.setEnabled(True)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
@@ -44,7 +44,7 @@ class Ui_Configuraciones(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_ProcQuirurgico) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 425)
+        self.virtual_keyboard.move(515, 650)
         self.pushButton_AgregarProcQuirurgico.setEnabled(True)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
@@ -52,19 +52,28 @@ class Ui_Configuraciones(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Intercurrencia) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 200)
+        self.virtual_keyboard.move(515, 750)
         self.pushButton_AgregarIntercurrencia.setEnabled(True)
 
     #################################################################################################################################
     def setupUi(self, Configuraciones):
         Configuraciones.setObjectName("Configuraciones")
-        Configuraciones.resize(1360, 700)
-
+        #Configuraciones.resize(1360, 700)
+        # Get the desktop screen size
+        desktop = QtWidgets.QApplication.desktop()
+        screen_rect = desktop.availableGeometry()
+        Configuraciones.setGeometry(screen_rect)
+        
         self.centralwidget = QtWidgets.QWidget(Configuraciones)
         self.centralwidget.setObjectName("centralwidget")
 
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(254, 134, 851, 431))
+        #self.frame.setGeometry(QtCore.QRect(304, 134, 751, 431))
+        frame_width = 851
+        frame_height = 431
+        center_x = (Configuraciones.width() - frame_width) // 2
+        center_y = (Configuraciones.height() - frame_height) // 2
+        self.frame.setGeometry(QtCore.QRect(center_x, center_y, frame_width, frame_height))
         self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -263,7 +272,7 @@ class Ui_Configuraciones(object):
         self.pushButton_AgregarIntercurrencia.setObjectName("pushButton_AgregarIntercurrencia")
         self.pushButton_AgregarIntercurrencia.setEnabled(False)
         self.pushButton_AgregarIntercurrencia.clicked.connect(self.funcAgregarIntercurrencia)
-
+        
         self.lineEdit_Farmaco.raise_()
         self.label_Configuraciones.raise_()
         self.label_Farmaco.raise_()
@@ -305,6 +314,7 @@ class Ui_Configuraciones(object):
         self.menubar.setObjectName("menubar")
         Configuraciones.setMenuBar(self.menubar)
 
+
         self.retranslateUi(Configuraciones)
         self.comboBox_Farmaco.setCurrentIndex(0)
         self.comboBox_ProcQuirurgico.setCurrentIndex(0)
@@ -314,8 +324,8 @@ class Ui_Configuraciones(object):
         self.comboBox_Farmaco.currentIndexChanged.connect(lambda: self.funcHabilitarBorrar(0))
         self.comboBox_ProcQuirurgico.currentIndexChanged.connect(lambda: self.funcHabilitarBorrar(1))
         self.comboBox_Intercurrencia.currentIndexChanged.connect(lambda: self.funcHabilitarBorrar(2))
-
-
+        
+        
     #############################################################################################################################
     #FUNCIONES: 
     def funcAbrirTecladoFarmaco(self):
@@ -390,7 +400,7 @@ class Ui_Configuraciones(object):
             self.comboBox_Intercurrencia.setCurrentIndex(0)
 
     def funcAgregarFarmacos(self):
-        self.comboBox_Farmaco.addItem(self.lineEdit_Farmaco.text())
+        self.comboBoxFarmaco.addItem(self.lineEdit_Farmaco.text())
         global farmacos
         farmacos.append(self.lineEdit_Farmaco.text())
         global habilitar_teclado

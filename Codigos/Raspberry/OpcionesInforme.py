@@ -1,8 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QDesktopWidget
 
 from DescargarInforme import Ui_DescargarInforme
 
 import os 
+import subprocess
 
 from GraficoSPI import SPIEstados, SPIFranjas, PorcentajesSPI
 
@@ -26,28 +28,37 @@ class Ui_OpcionesInforme(object):
         self.windowInicio = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.windowInicio)
-        self.windowInicio.show.showMaximized()
+        self.windowInicio.showMaximized()
 
     def openVisualizacionWebGraficos(self):
         from VisualizacionWebGraficos import Ui_VisualizacionGraficos
         self.windowVisualizarWeb = QtWidgets.QMainWindow()
         self.ui = Ui_VisualizacionGraficos()
         self.ui.setupUi(self.windowVisualizarWeb)
-        self.windowVisualizarWeb.show.showMaximized()
+        self.windowVisualizarWeb.showMaximized()
 
     #############################################################################################
 
     def setupUi(self, OpcionesInforme):
         OpcionesInforme.setObjectName("OpcionesInforme")
         #OpcionesInforme.resize(592, 383)
-        OpcionesInforme.resize(1360, 700)
-
+        #OpcionesInforme.resize(1360, 700)
+        # Get the desktop screen size
+        desktop = QtWidgets.QApplication.desktop()
+        screen_rect = desktop.availableGeometry()
+        OpcionesInforme.setGeometry(screen_rect)
+        
         self.centralwidget = QtWidgets.QWidget(OpcionesInforme)
         self.centralwidget.setObjectName("centralwidget")
         
         self.frame2 = QtWidgets.QFrame(self.centralwidget)
         #self.frame2.setGeometry(QtCore.QRect(10, 10, 751, 431))
-        self.frame2.setGeometry(QtCore.QRect(384, 169, 592, 362))
+        #self.frame2.setGeometry(QtCore.QRect(384, 169, 592, 362))
+        frame2_width = 592
+        frame2_height = 362
+        center_x = (OpcionesInforme.width() - frame2_width) // 2
+        center_y = (OpcionesInforme.height() - frame2_height) // 2
+        self.frame2.setGeometry(QtCore.QRect(center_x, center_y, frame2_width, frame2_height))
         self.frame2.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.frame2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame2.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -79,7 +90,8 @@ class Ui_OpcionesInforme(object):
         self.pushButton_VisualizarSPI.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
         self.pushButton_VisualizarSPI.setObjectName("pushButton_VisualizarSPI")
         self.pushButton_VisualizarSPI.clicked.connect(self.openVisualizacionWebGraficos)
-
+        self.pushButton_VisualizarSPI.setEnabled(False)
+        
         self.pushButton_VisualizarInforme = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_VisualizarInforme.setGeometry(QtCore.QRect(205, 120, 141, 61))
         self.pushButton_VisualizarInforme.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
@@ -136,15 +148,15 @@ class Ui_OpcionesInforme(object):
         global ruta_relativa_informe
         ruta_relativa_informe = os.path.join(directorio_actual, nombrepdf)
 
-        pdf = os.startfile(ruta_relativa_informe)
-
+        #pdf = os.startfile(ruta_relativa_informe)
+        subprocess.run(['xdg-open', ruta_relativa_informe])
 
 ###################################################################################################################
     def retranslateUi(self, OpcionesInforme):
         _translate = QtCore.QCoreApplication.translate
         OpcionesInforme.setWindowTitle(_translate("OpcionesInforme", "MainWindow"))
         self.groupBox_OpcionesInforme.setTitle(_translate("OpcionesInforme", "Opciones Informe"))
-        self.pushButton_VisualizarSPI.setText(_translate("OpcionesInforme", "Visualizar \n"" Evolución del SPI"))
+        self.pushButton_VisualizarSPI.setText(_translate("OpcionesInforme", "Visualizar \n"" Evolución SPI"))
         self.pushButton_VisualizarInforme.setText(_translate("OpcionesInforme", "Visualizar \n"" Informe"))
         self.pushButton_DescargarInforme_OpcionesInforme.setText(_translate("OpcionesInforme", "Descargar \n"" Informe"))
         self.pushButton_VolverOpcionesInforme.setText(_translate("OpcionesInforme", "Volver al \n""Menú Principal"))

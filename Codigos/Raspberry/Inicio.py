@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QDesktopWidget
 
 class Ui_MainWindow(object):
     #############################################################################################
@@ -28,14 +29,23 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1360, 700)
-
+        #MainWindow.resize(1360, 700)
+        # Get the desktop screen size
+        desktop = QtWidgets.QApplication.desktop()
+        screen_rect = desktop.availableGeometry()
+        MainWindow.setGeometry(screen_rect)
+        
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-
+        
         self.frame2 = QtWidgets.QFrame(self.centralwidget)
         #self.frame2.setGeometry(QtCore.QRect(10, 10, 751, 431))
-        self.frame2.setGeometry(QtCore.QRect(389, 169, 592, 362))
+        #self.frame2.setGeometry(QtCore.QRect(389, 169, 592, 362))
+        frame2_width = 592
+        frame2_height = 362
+        center_x = (MainWindow.width() - frame2_width) // 2
+        center_y = (MainWindow.height() - frame2_height) // 2
+        self.frame2.setGeometry(QtCore.QRect(center_x, center_y, frame2_width, frame2_height))
         self.frame2.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.frame2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame2.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -84,13 +94,18 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+#################################################################################
+# FUNCIONES
+
+#################################################################################
+            
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.groupBox_Inicio.setTitle(_translate("MainWindow", "Inicio"))
         self.pushButton_IniciarNuevoMonitoreo.setText(_translate("MainWindow", "Iniciar nuevo \n"" monitoreo "))
         self.pushButton_HistorialDePacientes.setText(_translate("MainWindow", "Historial de \n"" pacientes "))
-        self.pushButton_Configuraciones.setText(_translate("MainWindow", "Configuraciones"))
+        self.pushButton_Configuraciones.setText(_translate("MainWindow", "Ajustes"))
 
 if __name__ == "__main__":
     import sys

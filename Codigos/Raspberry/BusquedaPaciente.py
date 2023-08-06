@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
 
 import numpy as np
 import pandas as pd
@@ -37,7 +37,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 232)
+        self.virtual_keyboard.move(515, 450)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_Apellido(self, target_edit):
@@ -46,7 +46,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 280)
+        self.virtual_keyboard.move(515, 485)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_ID(self, target_edit):
@@ -55,7 +55,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 325)
+        self.virtual_keyboard.move(515, 525)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_Dia(self, target_edit):
@@ -64,7 +64,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Dia)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 370)
+        self.virtual_keyboard.move(515, 575)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_Mes(self, target_edit):
@@ -73,7 +73,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Mes)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 370)
+        self.virtual_keyboard.move(515, 575)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_Ao(self, target_edit):
@@ -82,22 +82,37 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Ao)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 370)
+        self.virtual_keyboard.move(515, 575)
 
 
     ##############################################################################
 
     def setupUi(self, BusquedaPacientes):
         BusquedaPacientes.setObjectName("BusquedaPacientes")
-        #BusquedaPacientes.resize(790, 511)
-        BusquedaPacientes.resize(1360, 700)
-
+        #BusquedaPacientes.resize(1360, 700)
+        # Get the desktop screen size
+        desktop = QtWidgets.QApplication.desktop()
+        screen_rect = desktop.availableGeometry()
+        BusquedaPacientes.setGeometry(screen_rect)
+        
         self.centralwidget = QtWidgets.QWidget(BusquedaPacientes)
         self.centralwidget.setObjectName("centralwidget")
         
-        self.groupBox_BusquedaPaciente = QtWidgets.QGroupBox(self.centralwidget)
-        #self.groupBox_BusquedaPaciente.setGeometry(QtCore.QRect(20, 20, 631, 471))
-        self.groupBox_BusquedaPaciente.setGeometry(QtCore.QRect(306, 114, 632, 472))
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        #self.frame.setGeometry(QtCore.QRect(10, 10, 771, 491))
+        self.frame.setGeometry(QtCore.QRect(294, 104, 772, 492))
+        frame_width = 772
+        frame_height = 492
+        center_x = (BusquedaPacientes.width() - frame_width) // 2
+        center_y = (BusquedaPacientes.height() - frame_height) // 2
+        self.frame.setGeometry(QtCore.QRect(center_x, center_y, frame_width, frame_height))
+        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+        
+        self.groupBox_BusquedaPaciente = QtWidgets.QGroupBox(self.frame)
+        self.groupBox_BusquedaPaciente.setGeometry(QtCore.QRect(10, 10, 632, 472))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.groupBox_BusquedaPaciente.setFont(font)
@@ -217,9 +232,9 @@ class Ui_BusquedaPacientes(object):
         self.pushButton_SeleccionarPaciente.clicked.connect(self.openOpcionesInforme)
         self.pushButton_SeleccionarPaciente.clicked.connect(lambda: BusquedaPacientes.close())
 
-        self.pushButton_VolverBusquedaPaciente = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_VolverBusquedaPaciente = QtWidgets.QPushButton(self.frame)
         #self.pushButton_VolverBusquedaPaciente.setGeometry(QtCore.QRect(660, 450, 111, 41))
-        self.pushButton_VolverBusquedaPaciente.setGeometry(QtCore.QRect(946, 544, 111, 41))
+        self.pushButton_VolverBusquedaPaciente.setGeometry(QtCore.QRect(frame_width - 121, frame_height - 51, 111, 41))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -227,16 +242,8 @@ class Ui_BusquedaPacientes(object):
         self.pushButton_VolverBusquedaPaciente.setFont(font)
         self.pushButton_VolverBusquedaPaciente.setStyleSheet("background-color: rgb(243, 243, 243);")
         self.pushButton_VolverBusquedaPaciente.setObjectName("pushButton_VolverBusquedaPaciente")
-        self.pushButton_VolverBusquedaPaciente.clicked.connect(lambda: BusquedaPacientes.close())
         self.pushButton_VolverBusquedaPaciente.clicked.connect(self.openInicio)
-
-        self.frame = QtWidgets.QFrame(self.centralwidget)
-        #self.frame.setGeometry(QtCore.QRect(10, 10, 771, 491))
-        self.frame.setGeometry(QtCore.QRect(294, 104, 772, 492))
-        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
+        self.pushButton_VolverBusquedaPaciente.clicked.connect(lambda: BusquedaPacientes.close())
 
         # Conecta la señal selectionChanged del QLineEdit para abrir el teclado virtual
         self.lineEdit_BuscarNombre.selectionChanged.connect(lambda: self.openTecladoVirtual_Nombre(self.lineEdit_BuscarNombre))
@@ -477,12 +484,12 @@ class Ui_BusquedaPacientes(object):
         self.groupBox_BusquedaPaciente.setTitle(_translate("BusquedaPacientes", "Búsqueda de Paciente"))
         self.pushButton_BuscarPaciente.setText(_translate("BusquedaPacientes", "Buscar"))
         self.pushButton_SeleccionarPaciente.setText(_translate("BusquedaPacientes", "Seleccionar"))
-        self.lineEdit_BuscarMes.setPlaceholderText(_translate("BusquedaPacientes", "   MM"))
-        self.lineEdit_BuscarAo.setPlaceholderText(_translate("BusquedaPacientes", "     AAAA"))
+        self.lineEdit_BuscarMes.setPlaceholderText(_translate("BusquedaPacientes", "MM"))
+        self.lineEdit_BuscarAo.setPlaceholderText(_translate("BusquedaPacientes", "AAAA"))
         self.label_Barra.setText(_translate("BusquedaPacientes", "/"))
         self.label_Barra_2.setText(_translate("BusquedaPacientes", "/"))
         self.label_BuscarFecha.setText(_translate("BusquedaPacientes", "Fecha: "))
-        self.lineEdit_BuscarDia.setPlaceholderText(_translate("BusquedaPacientes", "    DD"))
+        self.lineEdit_BuscarDia.setPlaceholderText(_translate("BusquedaPacientes", "DD"))
         self.label_BuscarID.setText(_translate("BusquedaPacientes", "ID: "))
         self.label_BuscarNombre.setText(_translate("BusquedaPacientes", "Nombre:"))
         self.label_BuscarApellido.setText(_translate("BusquedaPacientes", "Apellido:"))

@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QHBoxLayout
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QHBoxLayout, QDesktopWidget
 from PyQt5.QtCore import pyqtSignal
 
 class VirtualKeyboard(QWidget):
@@ -14,7 +14,13 @@ class VirtualKeyboard(QWidget):
 
     def init_ui(self):
         self.setWindowTitle('Teclado')
-        self.setGeometry(200, 200, 400, 200)
+    
+        # Center the window on the screen
+        center_x = 515 
+        center_y = 450
+        window_width = 400
+        window_height = 200
+        self.setGeometry(center_x, center_y, window_width, window_height)
 
         layout = QVBoxLayout()
 
@@ -57,5 +63,6 @@ class VirtualKeyboard(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     window = VirtualKeyboard(None)  # Target_edit se define en el código de main.py
+
     window.show()
     sys.exit(app.exec_())

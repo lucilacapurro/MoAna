@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
 
 import os
 
@@ -46,7 +46,7 @@ class Ui_InputDatosPaciente(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 345)
+        self.virtual_keyboard.move(515, 540)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_Apellido(self, target_edit):
@@ -55,7 +55,7 @@ class Ui_InputDatosPaciente(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 397)
+        self.virtual_keyboard.move(515, 580)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
     def openTecladoVirtual_ID(self, target_edit):
@@ -64,21 +64,36 @@ class Ui_InputDatosPaciente(object):
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID)  # Conecta la señal al slot de la MainWindow
         self.virtual_keyboard.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.virtual_keyboard.move(277, 445)
+        self.virtual_keyboard.move(515, 630)
 
     ############################################################################################
 
     def setupUi(self, InputDatosPaciente):
         InputDatosPaciente.setObjectName("InputDatosPaciente")
-        #InputDatosPaciente.resize(774, 471)
-        InputDatosPaciente.resize(1360, 700)
- 
+        #InputDatosPaciente.resize(1360, 700)
+         # Get the desktop screen size
+        desktop = QtWidgets.QApplication.desktop()
+        screen_rect = desktop.availableGeometry()
+        InputDatosPaciente.setGeometry(screen_rect)
+        
         self.centralwidget = QtWidgets.QWidget(InputDatosPaciente)
         self.centralwidget.setObjectName("centralwidget")
+
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        #self.frame.setGeometry(QtCore.QRect(304, 134, 752, 432))
+        frame_width = 700
+        frame_height = 412
+        center_x = (InputDatosPaciente.width() - frame_width) // 2
+        center_y = (InputDatosPaciente.height() - frame_height) // 2
+        self.frame.setGeometry(QtCore.QRect(center_x, center_y, frame_width, frame_height))
+        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
         
-        self.pushButton_VolverInputDatosPaciente = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_VolverInputDatosPaciente = QtWidgets.QPushButton(self.frame)
         #self.pushButton_VolverInputDatosPaciente.setGeometry(QtCore.QRect(640, 390, 111, 41))
-        self.pushButton_VolverInputDatosPaciente.setGeometry(QtCore.QRect(935, 513, 111, 41))
+        self.pushButton_VolverInputDatosPaciente.setGeometry(QtCore.QRect(frame_width - 121, frame_height -51, 111, 41))
         font = QtGui.QFont()
         font.setPointSize(10)
         font.setBold(False)
@@ -88,16 +103,9 @@ class Ui_InputDatosPaciente(object):
         self.pushButton_VolverInputDatosPaciente.setObjectName("pushButton_VolverInputDatosPaciente")
         self.pushButton_VolverInputDatosPaciente.clicked.connect(lambda: InputDatosPaciente.close())
         self.pushButton_VolverInputDatosPaciente.clicked.connect(self.openInicio)
-
-        self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(304, 134, 752, 432))
-        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
         
         self.groupBox_InputDatosPaciente = QtWidgets.QGroupBox(self.frame)
-        self.groupBox_InputDatosPaciente.setGeometry(QtCore.QRect(70, 50, 611, 301))
+        self.groupBox_InputDatosPaciente.setGeometry(QtCore.QRect(20, 20, 660, 322))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.groupBox_InputDatosPaciente.setFont(font)

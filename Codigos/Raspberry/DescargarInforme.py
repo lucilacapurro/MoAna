@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QDesktopWidget
 
 import os
 
@@ -23,13 +23,22 @@ class Ui_DescargarInforme(object):
 
     def setupUi(self, DescargarInforme):
         DescargarInforme.setObjectName("DescargarInforme")
-        DescargarInforme.resize(788, 416)
+        #DescargarInforme.resize(788, 416)
+        # Get the desktop screen size
+        desktop = QtWidgets.QApplication.desktop()
+        screen_rect = desktop.availableGeometry()
+        DescargarInforme.setGeometry(screen_rect)
         
         self.centralwidget = QtWidgets.QWidget(DescargarInforme)
         self.centralwidget.setObjectName("centralwidget")
         
         self.frame_DescargarInforme = QtWidgets.QFrame(self.centralwidget)
         self.frame_DescargarInforme.setGeometry(QtCore.QRect(10, 10, 721, 371))
+        frame_width = 721
+        frame_height = 371
+        center_x = (DescargarInforme.width() - frame_width) // 2
+        center_y = (DescargarInforme.height() - frame_height) // 2
+        self.frame_DescargarInforme.setGeometry(QtCore.QRect(center_x, center_y, frame_width, frame_height))
         self.frame_DescargarInforme.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.frame_DescargarInforme.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_DescargarInforme.setFrameShadow(QtWidgets.QFrame.Raised)

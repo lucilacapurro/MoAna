@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QTimer, QTime, QIODevice, Qt
 from datetime import datetime
-from PyQt5.QtWidgets import QMessageBox, QLCDNumber
+from PyQt5.QtWidgets import QMessageBox, QLCDNumber, QDesktopWidget
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 
 import numpy as np
@@ -119,7 +119,7 @@ class Ui_DisplayPrincipal(object):
         self.ui.setupUi(self.windowAjusteVisualizacionGraficaSPI)
         self.windowAjusteVisualizacionGraficaSPI.show()
         # Establecer la posición de la nueva ventana en la pantalla
-        self.windowAjusteVisualizacionGraficaSPI.move(320, 345)
+        self.windowAjusteVisualizacionGraficaSPI.move(600, 600)
         global restablecido
         restablecido = False
 
@@ -130,7 +130,7 @@ class Ui_DisplayPrincipal(object):
         self.ui.setupUi(self.windowSetUpAlarmas)
         self.windowSetUpAlarmas.show() 
         # Establecer la posición de la nueva ventana en la pantalla
-        self.windowSetUpAlarmas.move(280, 340)        
+        self.windowSetUpAlarmas.move(600, 600)        
 
     def openOpcionesInforme(self):
         from OpcionesInforme import Ui_OpcionesInforme
@@ -143,15 +143,28 @@ class Ui_DisplayPrincipal(object):
 
     def setupUi(self, DisplayPrincipal):
         DisplayPrincipal.setObjectName("DisplayPrincipal")
-        #DisplayPrincipal.resize(978, 544)
-        DisplayPrincipal.resize(1360, 700)
+        #DisplayPrincipal.resize(1360, 700)
+        # Get the desktop screen size
+        desktop = QtWidgets.QApplication.desktop()
+        screen_rect = desktop.availableGeometry()
+        DisplayPrincipal.setGeometry(screen_rect)
         
         self.centralwidget = QtWidgets.QWidget(DisplayPrincipal)
         self.centralwidget.setObjectName("centralwidget")
+
+        self.groupBox_Todo = QtWidgets.QGroupBox(self.centralwidget)
+        groupBox_Todo_width = 972
+        groupBox_Todo_height = 542
+        center_x = (DisplayPrincipal.width() - groupBox_Todo_width) // 2
+        center_y = (DisplayPrincipal.height() - groupBox_Todo_height) // 2
+        self.groupBox_Todo.setGeometry(QtCore.QRect(center_x, center_y, groupBox_Todo_width, groupBox_Todo_height))
+        self.groupBox_Todo.setStyleSheet("background-color: rgb(0, 0, 0);\n""border-color: rgb(0, 0, 0);")
+        self.groupBox_Todo.setTitle("")
+        self.groupBox_Todo.setObjectName("groupBox_Todo")
         
         # INICIO FIN CASO:
-        self.groupBox_IniciarFinalizar = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_IniciarFinalizar.setGeometry(QtCore.QRect(204, 319, 150, 191))
+        self.groupBox_IniciarFinalizar = QtWidgets.QGroupBox(self.groupBox_Todo)
+        self.groupBox_IniciarFinalizar.setGeometry(QtCore.QRect(10, 250, 150, 191))
         self.groupBox_IniciarFinalizar.setAutoFillBackground(False)
         self.groupBox_IniciarFinalizar.setStyleSheet("\n""background-color: rgb(0, 0, 0);")
         self.groupBox_IniciarFinalizar.setTitle("")
@@ -188,8 +201,8 @@ class Ui_DisplayPrincipal(object):
         self.pushButton_FinalizarCaso.clicked.connect(self.openOpcionesInforme)
 
         # ESTADOS:
-        self.groupBox_TodoEstado = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_TodoEstado.setGeometry(QtCore.QRect(974, 240, 181, 360))
+        self.groupBox_TodoEstado = QtWidgets.QGroupBox(self.groupBox_Todo)
+        self.groupBox_TodoEstado.setGeometry(QtCore.QRect(781, 172, 181, 360))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.groupBox_TodoEstado.setFont(font)
@@ -323,8 +336,8 @@ class Ui_DisplayPrincipal(object):
         self.textEdit_Estado.raise_()
         
         # EVENTOS:
-        self.groupBox_Eventos = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_Eventos.setGeometry(QtCore.QRect(204, 519, 761, 81))
+        self.groupBox_Eventos = QtWidgets.QGroupBox(self.groupBox_Todo)
+        self.groupBox_Eventos.setGeometry(QtCore.QRect(10, 451, 761, 81))
         self.groupBox_Eventos.setAutoFillBackground(False)
         self.groupBox_Eventos.setStyleSheet("background-color: rgb(0, 0, 0);")
         self.groupBox_Eventos.setTitle("")
@@ -403,8 +416,8 @@ class Ui_DisplayPrincipal(object):
         self.comboBox_Intercurrencias.currentIndexChanged.connect(self.funcNuevoEvento)
 
         # ALARMAS:
-        self.groupBox_Alarmas = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_Alarmas.setGeometry(QtCore.QRect(974, 89, 181, 145))
+        self.groupBox_Alarmas = QtWidgets.QGroupBox(self.groupBox_Todo)
+        self.groupBox_Alarmas.setGeometry(QtCore.QRect(781, 10, 181, 145))
         self.groupBox_Alarmas.setAutoFillBackground(False)
         self.groupBox_Alarmas.setStyleSheet("background-color: rgb(0, 0, 0);")
         self.groupBox_Alarmas.setTitle("")
@@ -461,6 +474,7 @@ class Ui_DisplayPrincipal(object):
         self.radioButton_On = QtWidgets.QRadioButton(self.groupBox_Alarmas)
         self.radioButton_On.setGeometry(QtCore.QRect(50, 85, 15, 15))
         self.radioButton_On.setObjectName("radioButton_On")
+        #self.radioButton_On.setStyleSheet("QRadioButton::indicator{ background-color = red; }")
 
         self.label_On = QtWidgets.QLabel(self.groupBox_Alarmas)
         self.label_On.setGeometry(QtCore.QRect(65, 85, 20, 15))
@@ -487,9 +501,8 @@ class Ui_DisplayPrincipal(object):
         self.pushButton_SetUpAlarmas.clicked.connect(self.openSetUpAlarmas)
         self.pushButton_SetUpAlarmas.setEnabled(False)
 
-        self.groupBox_TodoSPI = QtWidgets.QGroupBox(self.centralwidget)
-        #self.groupBox_TodoSPI.setGeometry(QtCore.QRect(10, 10, 761, 221))
-        self.groupBox_TodoSPI.setGeometry(QtCore.QRect(204, 89, 761, 221))
+        self.groupBox_TodoSPI = QtWidgets.QGroupBox(self.groupBox_Todo)
+        self.groupBox_TodoSPI.setGeometry(QtCore.QRect(10, 10, 761, 221))
         self.groupBox_TodoSPI.setAutoFillBackground(False)
         self.groupBox_TodoSPI.setStyleSheet("background-color: rgb(0, 0, 0);")
         self.groupBox_TodoSPI.setTitle("")
@@ -514,7 +527,7 @@ class Ui_DisplayPrincipal(object):
         font = QtGui.QFont()
         font.setPointSize(10)
         self.textEdit_VentanaTemporal.setFont(font)
-        self.textEdit_VentanaTemporal.setStyleSheet("background-color: #000000;\n""border-color: rgb(255, 0, 0);")
+        self.textEdit_VentanaTemporal.setStyleSheet("background-color: #000000;\n""color: #FFFFFF;\n""border-color: rgb(255, 0, 0);")
         self.textEdit_VentanaTemporal.setFrameShape(QtWidgets.QFrame.Panel)
         self.textEdit_VentanaTemporal.setObjectName("textEdit_VentanaTemporal")
         self.textEdit_VentanaTemporal.setReadOnly(True)
@@ -553,16 +566,25 @@ class Ui_DisplayPrincipal(object):
         self.label_AnalgesiaInsuficiente.setGeometry(QtCore.QRect(170, 40, 71, 51))
         self.label_AnalgesiaInsuficiente.setStyleSheet("background-color: rgb(255, 0, 0);\n""border-color: rgb(0, 0, 0);")
         self.label_AnalgesiaInsuficiente.setObjectName("label_AnalgesiaInsuficiente")
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_AnalgesiaInsuficiente.setFont(font)
         
         self.label_AnalgesiaAdecuada = QtWidgets.QLabel(self.groupBox_TodoSPI)
         self.label_AnalgesiaAdecuada.setGeometry(QtCore.QRect(170, 90, 71, 51))
         self.label_AnalgesiaAdecuada.setStyleSheet("background-color: rgb(48, 206, 13);\n""border-color: rgb(0, 0, 0);")
         self.label_AnalgesiaAdecuada.setObjectName("label_AnalgesiaAdecuada")
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_AnalgesiaAdecuada.setFont(font)
         
         self.label_AnalgesiaExcesiva = QtWidgets.QLabel(self.groupBox_TodoSPI)
         self.label_AnalgesiaExcesiva.setGeometry(QtCore.QRect(170, 140, 71, 51))
         self.label_AnalgesiaExcesiva.setStyleSheet("background-color: rgb(255, 255, 0);\n""border-color: rgb(0, 0, 0);")
         self.label_AnalgesiaExcesiva.setObjectName("label_AnalgesiaExcesiva")
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_AnalgesiaExcesiva.setFont(font)
         
         self.label_50 = QtWidgets.QLabel(self.groupBox_TodoSPI)
         self.label_50.setGeometry(QtCore.QRect(150, 80, 21, 21))
@@ -641,9 +663,8 @@ class Ui_DisplayPrincipal(object):
         self.label_On.raise_()
         self.label_Off.raise_()
         
-        self.groupBox_TodoPPG = QtWidgets.QGroupBox(self.centralwidget)
-        #self.groupBox_TodoPPG.setGeometry(QtCore.QRect(10, 240, 761, 191))
-        self.groupBox_TodoPPG.setGeometry(QtCore.QRect(360, 319, 605, 191))
+        self.groupBox_TodoPPG = QtWidgets.QGroupBox(self.groupBox_Todo)
+        self.groupBox_TodoPPG.setGeometry(QtCore.QRect(170, 250, 605, 191))
         self.groupBox_TodoPPG.setAutoFillBackground(False)
         self.groupBox_TodoPPG.setStyleSheet("background-color: rgb(0, 0, 0);")
         self.groupBox_TodoPPG.setTitle("")
@@ -686,13 +707,6 @@ class Ui_DisplayPrincipal(object):
         self.linea_20 = [20] * ventana_SPI
         self.plt_SPI.plot(self.senal_spi_x, self.linea_50, pen=pg.mkPen('#FF0000',width=2, style=QtCore.Qt.DashLine)) # limite de SPI = 50 
         self.plt_SPI.plot(self.senal_spi_x, self.linea_20, pen=pg.mkPen('#FFFF00',width=2, style=QtCore.Qt.DashLine)) # limite de SPI = 20
-
-        self.groupBox_Todo = QtWidgets.QGroupBox(self.centralwidget)
-        #self.groupBox_Todo.setGeometry(QtCore.QRect(0, -10, 971, 541))
-        self.groupBox_Todo.setGeometry(QtCore.QRect(194, 79, 972, 542))
-        self.groupBox_Todo.setStyleSheet("background-color: rgb(0, 0, 0);\n""border-color: rgb(0, 0, 0);")
-        self.groupBox_Todo.setTitle("")
-        self.groupBox_Todo.setObjectName("groupBox_Todo")
         
         self.groupBox_Todo.raise_()
         self.groupBox_TodoSPI.raise_()
@@ -856,7 +870,7 @@ class Ui_DisplayPrincipal(object):
                                 pop_up.setWindowTitle("Alerta")
                                 pop_up.setText("La señal no puede registrarse correctamente. Asegúrese de que el sensor esté colocado del modo adecuado.")
                                 pop_up.setStandardButtons(QMessageBox.Ok)
-                                pop_up.move(350, 400)
+                                pop_up.move(600, 600)
                                 pop_up.exec_()
 
                                 contador_error_sensor = 0
@@ -875,7 +889,7 @@ class Ui_DisplayPrincipal(object):
                             pop_up.setWindowTitle("Alerta")
                             pop_up.setText("Se detectó la desconexión del sensor. Asegúrese de que esté colocado del modo adecuado.")
                             pop_up.setStandardButtons(QMessageBox.Ok)
-                            pop_up.move(350, 400)
+                            pop_up.move(600, 600)
                             pop_up.exec_()
 
                     self.senal_spi=self.senal_spi[1:]
@@ -1333,6 +1347,12 @@ class Ui_DisplayPrincipal(object):
             self.textEdit_Alarma_Max.setStyleSheet("background-color: rgb(0, 0, 0); color: white; border: 1px solid #808080;")
             self.textEdit_Alarma_Min.setStyleSheet("background-color: rgb(0, 0, 0); color: white; border: 1px solid #808080;")
             self.textEdit_Alarma_Tiempo.setStyleSheet("background-color: rgb(0, 0, 0); color: white; border: 1px solid #808080;")
+            font = QtGui.QFont()
+            font.setPointSize(8)
+            self.textEdit_Alarma_Max.setFont(font)
+            self.textEdit_Alarma_Min.setFont(font)
+            self.textEdit_Alarma_Tiempo.setFont(font)
+            
     
     def funcEjecutarAlarma(self):
         directorio_actual = os.path.abspath(os.path.dirname(__file__))
@@ -1367,7 +1387,7 @@ class Ui_DisplayPrincipal(object):
         self.pushButton_InicioCirugia.setText(_translate("DisplayPrincipal", "Inicio Cirugía"))
         self.pushButton_FinCirugia.setText(_translate("DisplayPrincipal", "Fin Cirugía"))
         self.pushButton_FinAnestesia.setText(_translate("DisplayPrincipal", "Fin Anestesia"))
-        self.textEdit_Estado.setHtml(_translate("DisplayPrincipal", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n""<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n""p, li { white-space: pre-wrap; }\n""</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11pt; font-weight:400; font-style:normal;\">\n""<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
+        self.textEdit_Estado.setHtml(_translate("DisplayPrincipal", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n""<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n""p, li { white-space: pre-wrap; }\n""</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:11pt; font-color:white; font-weight:400; font-style:normal;\">\n""<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.textEdit_VentanaTemporal.setHtml(_translate("DisplayPrincipal", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n""<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n""p, li { white-space: pre-wrap; }\n""</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:10pt; font-weight:400; font-style:normal;\">\n""<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.textEdit_Alarma_Max.setHtml(_translate("DisplayPrincipal", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n""<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n""p, li { white-space: pre-wrap; }\n""</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n""<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.textEdit_Alarma_Min.setHtml(_translate("DisplayPrincipal", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n""<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n""p, li { white-space: pre-wrap; }\n""</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400; font-style:normal;\">\n""<p align=\"center\" style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
