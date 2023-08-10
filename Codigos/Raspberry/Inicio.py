@@ -29,8 +29,7 @@ class Ui_MainWindow(object):
 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        #MainWindow.resize(1360, 700)
-        # Get the desktop screen size
+        # Obtiene el tamaño de la pantalla
         desktop = QtWidgets.QApplication.desktop()
         screen_rect = desktop.availableGeometry()
         MainWindow.setGeometry(screen_rect)
@@ -39,8 +38,6 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         
         self.frame2 = QtWidgets.QFrame(self.centralwidget)
-        #self.frame2.setGeometry(QtCore.QRect(10, 10, 751, 431))
-        #self.frame2.setGeometry(QtCore.QRect(389, 169, 592, 362))
         frame2_width = 592
         frame2_height = 362
         center_x = (MainWindow.width() - frame2_width) // 2
@@ -54,7 +51,6 @@ class Ui_MainWindow(object):
           
         self.groupBox_Inicio = QtWidgets.QGroupBox(self.frame2)
         self.groupBox_Inicio.setGeometry(QtCore.QRect(10, 10, 561, 341))
-        #self.groupBox_Inicio.setGeometry(QtCore.QRect(399, 179, 562, 342))
         self.groupBox_Inicio.setStyleSheet("background-color: rgb(255, 255, 255);\n" "font: 14pt \"MS Shell Dlg 2\";")
         self.groupBox_Inicio.setObjectName("groupBox_Inicio")
         
@@ -65,6 +61,7 @@ class Ui_MainWindow(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
         
+        # Botón para iniciar un nuevo monitoreo
         self.pushButton_IniciarNuevoMonitoreo = QtWidgets.QPushButton(self.frame)
         self.pushButton_IniciarNuevoMonitoreo.setGeometry(QtCore.QRect(45, 120, 121, 61))
         self.pushButton_IniciarNuevoMonitoreo.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n" "background-color: rgb(132, 132, 132);\n" "color: rgb(255, 255, 255);")
@@ -72,6 +69,7 @@ class Ui_MainWindow(object):
         self.pushButton_IniciarNuevoMonitoreo.clicked.connect(self.openInputDatosPaciente)
         self.pushButton_IniciarNuevoMonitoreo.clicked.connect(lambda: MainWindow.close())
 
+        # Botón para buscar en el historial de monitoreos
         self.pushButton_HistorialDePacientes = QtWidgets.QPushButton(self.frame)
         self.pushButton_HistorialDePacientes.setGeometry(QtCore.QRect(210, 120, 121, 61))
         self.pushButton_HistorialDePacientes.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n" "background-color: rgb(132, 132, 132);\n" "color: rgb(255, 255, 255);")
@@ -79,6 +77,7 @@ class Ui_MainWindow(object):
         self.pushButton_HistorialDePacientes.clicked.connect(self.openBusquedaPaciente)
         self.pushButton_HistorialDePacientes.clicked.connect(lambda: MainWindow.close())
 
+        # Botón para realizar las configuraciones de los eventos
         self.pushButton_Configuraciones = QtWidgets.QPushButton(self.frame)
         self.pushButton_Configuraciones.setGeometry(QtCore.QRect(375, 120, 121, 61))
         self.pushButton_Configuraciones.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n" "background-color: rgb(132, 132, 132);\n" "color: rgb(255, 255, 255);")
@@ -93,9 +92,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-
-#################################################################################
-# FUNCIONES
 
 #################################################################################
             

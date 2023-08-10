@@ -8,13 +8,15 @@ import plotly.express as px
 import os
 from openpyxl import Workbook
 
+##############################################################################################
+
 #global id_global
 id_global = ""
 
 #global porcentajes
 #porcentajes = []
 
-# ------------------------------------------------------------------------------------------------------------
+##############################################################################################
 def funcObtenerCSV(directorio_actual, id_global):
     from InputDatosPaciente import id_global_principal
     from BusquedaPaciente import id_global_busqueda
@@ -43,7 +45,7 @@ spi_promedio = df["spi_promedio"]
 estados = df['estado']
 eventos = df['evento']
 
-# ------------------------------------------------------------------------------------------------------------
+# ##############################################################################################
 
 # GRAFICO INTERACTIVO EVOLUCION SPI - ESTADOS
 pre_basal = df[df.estado == "-"]
