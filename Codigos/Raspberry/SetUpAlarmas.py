@@ -1,8 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QSpinBox, QDesktopWidget
 
+############################################################################################################################################
+
 global alarmas
 alarmas = [50, 20, 15] #seteamos los valores default de las alarmas
+
+############################################################################################################################################
 
 class Ui_SetUpAlarmas(object):
     def setupUi(self, SetUpAlarmas):
@@ -21,13 +25,14 @@ class Ui_SetUpAlarmas(object):
         self.groupBox_SetUpAlarmas.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.groupBox_SetUpAlarmas.setObjectName("groupBox_SetUpAlarmas")
         
+        # Sección configuración máximo SPI 
         self.label_MaxSPI = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
         self.label_MaxSPI.setGeometry(QtCore.QRect(11, 40, 95, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_MaxSPI.setFont(font)
         self.label_MaxSPI.setObjectName("label_MaxSPI")
-        
+        # Spinner de valores de SPI entre 0 y 100 que van de 5 en 5, seteado como default en 50 
         self.spinBox_MaxSPI = QSpinBox(self.groupBox_SetUpAlarmas)
         self.spinBox_MaxSPI.setGeometry(QtCore.QRect(114, 40, 486, 31))
         self.spinBox_MaxSPI.setStyleSheet("background-color: rgb(226, 226, 226);")
@@ -40,13 +45,14 @@ class Ui_SetUpAlarmas(object):
         font.setPointSize(11)
         self.spinBox_MaxSPI.setFont(font)
     
+        # Sección configuración mínimo SPI 
         self.label_MinSPI = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
         self.label_MinSPI.setGeometry(QtCore.QRect(11, 90, 90, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_MinSPI.setFont(font)
         self.label_MinSPI.setObjectName("label_MinSPI")
-        
+        # Spinner de valores de SPI entre 0 y 100 que van de 5 en 5, seteado como default en 20 
         self.spinBox_MinSPI = QSpinBox(self.groupBox_SetUpAlarmas)
         self.spinBox_MinSPI.setGeometry(QtCore.QRect(109, 88, 491, 31))
         self.spinBox_MinSPI.setStyleSheet("background-color: rgb(226, 226, 226);")
@@ -59,13 +65,14 @@ class Ui_SetUpAlarmas(object):
         font.setPointSize(11)
         self.spinBox_MinSPI.setFont(font)
         
+        # Sección configuración tiempo de permanencia 
         self.label_TiempoPermanencia = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
         self.label_TiempoPermanencia.setGeometry(QtCore.QRect(11, 137, 170, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_TiempoPermanencia.setFont(font)
         self.label_TiempoPermanencia.setObjectName("label_TiempoPermanencia")
-        
+        # Listado de opciones de tiempos de permanencia para configurar 
         self.comboBox_TiempoPermanencia = QtWidgets.QComboBox(self.groupBox_SetUpAlarmas)
         self.comboBox_TiempoPermanencia.setGeometry(QtCore.QRect(193, 140, 410, 31))
         font = QtGui.QFont()
@@ -83,6 +90,7 @@ class Ui_SetUpAlarmas(object):
         self.comboBox_TiempoPermanencia.addItem("")
         self.comboBox_TiempoPermanencia.addItem("")
         
+        # Botón para guardar las configuraciones seteadas 
         self.pushButton_GuardarAlarmas = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_GuardarAlarmas.setGeometry(QtCore.QRect(530, 200, 81, 31))
         font = QtGui.QFont()
@@ -94,6 +102,7 @@ class Ui_SetUpAlarmas(object):
         self.pushButton_GuardarAlarmas.setObjectName("pushButton_GuardarAlarmas")
         self.pushButton_GuardarAlarmas.clicked.connect(self.funcChequearAlarmas)
 
+        # Aviso de obligatoriedad de los tres campos para poder guardar la configuración 
         self.label_Obligatorio = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
         self.label_Obligatorio.setGeometry(QtCore.QRect(493, 12, 110, 25))
         font = QtGui.QFont()
@@ -106,16 +115,16 @@ class Ui_SetUpAlarmas(object):
         self.statusbar = QtWidgets.QStatusBar(SetUpAlarmas)
         self.statusbar.setObjectName("statusbar")
         SetUpAlarmas.setStatusBar(self.statusbar)
-
         self.retranslateUi(SetUpAlarmas)
         QtCore.QMetaObject.connectSlotsByName(SetUpAlarmas)
 
 ##############################################################################################################################
 #FUNCIONES
-    def funcChequearAlarmas(self): # VERIFICAR LOS CHEQUEOS EN CASO DE PERSONALIZAR LAS OPCIONES DE TIEMPO DE PERMANENCIA
+    # Función que verifica los chequeos del ingreso de valores erróneos 
+    def funcChequearAlarmas(self):
         SPIMax = int(self.spinBox_MaxSPI.value())
         SPIMin = int(self.spinBox_MinSPI.value())
-
+        # Se setea un Mínimo mayor al Máximo 
         if SPIMin > SPIMax:
             pop_up = QMessageBox()
             pop_up.setIcon(QMessageBox.Critical)
@@ -123,14 +132,14 @@ class Ui_SetUpAlarmas(object):
             pop_up.setText("El valor 'Mínimo SPI' ingresado es mayor al valor 'Máximo SPI' ingresado. Reingréselos.")
             pop_up.move(600, 600)
             pop_up.exec_()
-
+        # Se setean valores correctos 
         else:
             TiempoPermanencia = int(self.comboBox_TiempoPermanencia.currentText().split(" ")[0])
             if TiempoPermanencia < 4: # solo 15 o 30 son segundos y 1, 2 o 3 son minutos 
                 TiempoPermanencia = TiempoPermanencia * 60
             global alarmas 
             alarmas = [SPIMax, SPIMin, TiempoPermanencia]
-
+            
             pop_up = QMessageBox()
             pop_up.setIcon(QMessageBox.Information)
             pop_up.setWindowTitle("Alarma configurada")
@@ -162,13 +171,11 @@ if __name__ == "__main__":
     SetUpAlarmas = QtWidgets.QMainWindow()
     ui = Ui_SetUpAlarmas()
     ui.setupUi(SetUpAlarmas)
-    
-     # Center the window on the screen
+    # Se centra la ventana en la pantalla 
     screen_rect = app.desktop().availableGeometry(SetUpAlarmas)
     window_rect = SetUpAlarmas.frameGeometry()
     center_x = (screen_rect.width() - window_rect.width()) // 2
     center_y = (screen_rect.height() - window_rect.height()) // 2
     SetUpAlarmas.move(center_x, center_y)
-    
     SetUpAlarmas.show()
     sys.exit(app.exec_())

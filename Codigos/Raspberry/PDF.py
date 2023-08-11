@@ -1,8 +1,6 @@
-# Para armar el pdf 
+import os
 from reportlab.pdfgen.canvas import Canvas
-# Para levantar fecha y hora
 import datetime
-# Para generar tabla
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
@@ -13,15 +11,16 @@ from InputDatosPaciente import listaDatosPaciente, id_global_principal, fecha, h
 from Principal import listaInicioEstados, listaTiemposEventos, listaEventos
 from GraficoSPI import porcentajes
 
-import os
-
+###############################################################################################################
 
 # Obtén la ruta absoluta del directorio actual
 directorio_actual = os.path.abspath(os.path.dirname(__file__))
 nombrepdf = 'Informe ' + id_global_principal + '.pdf'
 
+# Crea el canvas para el informe
 pdf = Canvas(os.path.join(directorio_actual, nombrepdf), pagesize=(612.0, 792.0))
 
+# Se definen los formatos de texto
 font_size_titulo_principal = 21
 font_size_titulo_secundario = 18
 font_size_subtitulo = 14
@@ -36,12 +35,13 @@ sangria_informe = 40
 sangria_bullets = 50
 sangria_texto = 70
 
+# Contador de renglones para ir seteando las ubicaciones de los textos y hacer los saltos de página
 global n_renglones
 n_renglones = 0
 
-#####################################
+###############################################################################################################
 # FECHA Y HORA
-# Escribo la fecha y hora del inicio del monitoreo en el pdf
+# Escribe la fecha y hora del inicio del monitoreo en el pdf
 pdf.drawString(sangria_informe, renglon-interlineado*n_renglones, "Fecha monitoreo: " + fecha.strftime("%Y-%m-%d"))
 n_renglones += 1
 pdf.drawString(sangria_informe, renglon-interlineado*n_renglones, "Hora inicio monitoreo: " + hora.strftime("%H:%M:%S"))
@@ -49,15 +49,17 @@ n_renglones += 1
 pdf.line(sangria_informe, renglon-interlineado*n_renglones, 612-sangria_informe, renglon-interlineado*n_renglones)
 n_renglones += 1
 
-#####################################
+###############################################################################################################
 # TITULO
+# Escribe como título del informe el ID del paciente 
 n_renglones += 1
 id = listaDatosPaciente[2]
 pdf.setFont("Times-Roman", font_size_titulo_principal)
 pdf.drawCentredString(300, renglon-interlineado*n_renglones, "Informe de Monitoreo de Nocicepcion - " + id)
 
-#####################################
+###############################################################################################################
 # DATOS DEL PACIENTE
+# Escribe los datos del paciente: nombre, apellido y ID
 n_renglones += 2
 nombre = listaDatosPaciente[0]
 apellido = listaDatosPaciente[1]
@@ -74,9 +76,9 @@ n_renglones += 1
 pdf.drawString(sangria_bullets, renglon-interlineado*n_renglones, "   - ID: " + id)
 n_renglones += 1
 
-
-#####################################
+###############################################################################################################
 # ESTADOS DEL PACIENTE
+# Escribe los tiempos de inicio de los distintos estados del paciente y el tiempo total de duración del monitoreo
 n_renglones += 2
 hora_basal = listaInicioEstados[0]
 hora_inic_anest = listaInicioEstados[1]
@@ -103,9 +105,9 @@ n_renglones += 1
 pdf.drawString(sangria_bullets, renglon-interlineado*n_renglones, "   - Duracion total de monitoreo: " + duracion)
 n_renglones += 1
 
-
-#####################################
+###############################################################################################################
 # EVENTOS
+# Escribe los eventos con sus tiempos de ocurrencia separador por el tipo de evento: suministro de fármacos analgésicos, procedimientos quirúrgicos e intercurrencias
 n_renglones += 2
 
 lista_farmaco = []
@@ -128,6 +130,7 @@ pdf.setFont("Times-Roman", font_size_enumerado)
 pdf.drawString(sangria_bullets, renglon-interlineado*n_renglones, "   - Farmacos analgesicos:")
 n_renglones += 1
 
+# Función que chequea si se supera la cantidad de renglones disponibles en una página, y en ese caso crea una página nueva 
 def funcChequearRenglones(interlineado = 15):
     global n_renglones
     if n_renglones*interlineado >= 792.0:
@@ -175,16 +178,17 @@ n_renglones += 1
 
 pdf.showPage()
 
-#####################################
-# Nueva pagina 
+###############################################################################################################
+# NUEVA PÁGINA: Gráficos de evolución del índice de nocicepción SPI durante el monitoreo 
+# Título
 renglon = 750
 interlineado = 15
 n_renglones = 2
 pdf.setFont("Times-Roman", font_size_titulo_secundario)
-
 pdf.drawCentredString(300, renglon-interlineado*n_renglones, "Evolucion del indice de nocicepcion durante el monitoreo")
 n_renglones += 3
 
+# Referecia de interpretación del índice
 pdf.setFont("Times-Roman", font_size_enumerado)
 pdf.drawString(sangria_informe, renglon-interlineado*n_renglones, "Referencia de interpretacion del indice SPI:")
 n_renglones += 2
@@ -199,12 +203,13 @@ n_renglones += 1
 
 n_renglones += 2
 
+# Gráficos de evolución del índice: por franjas de interpretación y por estados
 pdf.setFont("Times-Roman", font_size_enumerado)
 pdf.drawString(sangria_informe, renglon-interlineado*n_renglones, "Graficos de evolucion del indice SPI en el tiempo:")
 
 n_renglones += 18
 
-# Imagen de franjas SPI
+# Imagen grafico evolucion SPI por franjas
 # Ruta relativa de la imagen
 ruta_relativa = os.path.join(directorio_actual, 'figSPIFranjas.jpg')
 figSPIFranjas = ImageReader(ruta_relativa)
@@ -212,18 +217,16 @@ pdf.drawImage(figSPIFranjas, x=45, y=renglon-interlineado*n_renglones, width=500
 
 n_renglones += 17
 
-# Imagen de tendencia SPI
+# Imagen grafico evolucion SPI por estados 
 # Ruta relativa de la imagen
 ruta_relativa = os.path.join(directorio_actual, 'figSPIEstados.jpg')
 figSPIEstados = ImageReader(ruta_relativa)
 pdf.drawImage(figSPIEstados, x=40, y=renglon-interlineado*n_renglones, width=550, height=255)
 
-
 pdf.showPage()
 
-###########################################################################
-
-# Nueva pagina
+###############################################################################################################
+# NUEVA PÁGINA: de tiempo por estado en el que el indice se encontro en cada franja de valores de SPI
 renglon = 750
 interlineado = 15
 n_renglones = 3
@@ -236,6 +239,7 @@ pdf.setFont("Times-Roman", font_size_texto)
 pdf.drawString(sangria_informe, renglon-interlineado*n_renglones, "Porcentaje de tiempo por estado en el que el indice se encontro en cada franja de valores de SPI.")
 n_renglones += 2
 
+# En formato de tabla 
 data = [
     [' Estado \ SPI ', ' 50 < ', ' 20 < & < 50 ', ' < 20 '],
     ['Basal', str(round(porcentajes[0][0]))+'%', str(round(porcentajes[0][1]))+'%', str(round(porcentajes[0][2]))+'%'],
@@ -269,7 +273,8 @@ table.drawOn(pdf, x, y-th)
 
 n_renglones += 30
 
-# Imagen de porcentajes
+
+# Imagen de gráfico de porcentajes
 # Ruta relativa de la imagen
 ruta_relativa = os.path.join(directorio_actual, 'figPorcentajesSPI.jpg')
 figPorcentajesSPI = ImageReader(ruta_relativa)
@@ -277,4 +282,6 @@ pdf.drawImage(figPorcentajesSPI, x=105, y=renglon-interlineado*n_renglones, widt
 
 pdf.showPage()
 
+###############################################################################################################
+# Guarda el informe
 pdf.save()

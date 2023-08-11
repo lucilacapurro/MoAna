@@ -1,12 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QDesktopWidget
-
 from DescargarInforme import Ui_DescargarInforme
+from GraficoSPI import SPIEstados, SPIFranjas, PorcentajesSPI
 
 import os 
 import subprocess
 
-from GraficoSPI import SPIEstados, SPIFranjas, PorcentajesSPI
+#############################################################################################
 
 global id_seleccionado
 id_seleccionado = ""
@@ -14,15 +14,19 @@ id_seleccionado = ""
 global ruta_relativa_informe
 ruta_relativa_informe = ""
 
+#############################################################################################
+
 class Ui_OpcionesInforme(object):
-    #############################################################################################
-    #Funciones para abrir otras ventanas
+    # Funciones para abrir otras ventanas: 
+
+    # Abrir la ventana de descarga del informe
     def openDescargarInforme(self):
         self.windowDescargarInforme = QtWidgets.QMainWindow()
         self.ui = Ui_DescargarInforme()
         self.ui.setupUi(self.windowDescargarInforme)
         self.windowDescargarInforme.showMaximized()
 
+    # Volver a la ventana de inicio
     def openInicio(self):
         from Inicio import Ui_MainWindow
         self.windowInicio = QtWidgets.QMainWindow()
@@ -30,6 +34,7 @@ class Ui_OpcionesInforme(object):
         self.ui.setupUi(self.windowInicio)
         self.windowInicio.showMaximized()
 
+    # Abrir la ventana de visualizaciones de gráficos
     def openVisualizacionWebGraficos(self):
         from VisualizacionWebGraficos import Ui_VisualizacionGraficos
         self.windowVisualizarWeb = QtWidgets.QMainWindow()
@@ -37,13 +42,11 @@ class Ui_OpcionesInforme(object):
         self.ui.setupUi(self.windowVisualizarWeb)
         self.windowVisualizarWeb.showMaximized()
 
-    #############################################################################################
+#############################################################################################
 
     def setupUi(self, OpcionesInforme):
         OpcionesInforme.setObjectName("OpcionesInforme")
-        #OpcionesInforme.resize(592, 383)
-        #OpcionesInforme.resize(1360, 700)
-        # Get the desktop screen size
+        # Obtiene el tamaño de la pantalla
         desktop = QtWidgets.QApplication.desktop()
         screen_rect = desktop.availableGeometry()
         OpcionesInforme.setGeometry(screen_rect)
@@ -52,8 +55,6 @@ class Ui_OpcionesInforme(object):
         self.centralwidget.setObjectName("centralwidget")
         
         self.frame2 = QtWidgets.QFrame(self.centralwidget)
-        #self.frame2.setGeometry(QtCore.QRect(10, 10, 751, 431))
-        #self.frame2.setGeometry(QtCore.QRect(384, 169, 592, 362))
         frame2_width = 592
         frame2_height = 362
         center_x = (OpcionesInforme.width() - frame2_width) // 2
@@ -67,7 +68,6 @@ class Ui_OpcionesInforme(object):
 
         self.groupBox_OpcionesInforme = QtWidgets.QGroupBox(self.frame2)
         self.groupBox_OpcionesInforme.setGeometry(QtCore.QRect(10, 10, 571, 341))
-        #self.groupBox_OpcionesInforme.setGeometry(QtCore.QRect(394, 179, 572, 342))
         self.groupBox_OpcionesInforme.setStyleSheet("background-color: rgb(255, 255, 255);\n""font: 14pt \"MS Shell Dlg 2\";")
         self.groupBox_OpcionesInforme.setObjectName("groupBox_OpcionesInforme")
         
@@ -85,6 +85,7 @@ class Ui_OpcionesInforme(object):
         self.frame_OpcionesInforme.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_OpcionesInforme.setObjectName("frame_OpcionesInforme")
         
+        # Botón para abrir la ventana de visualizaciones de gráficos
         self.pushButton_VisualizarSPI = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_VisualizarSPI.setGeometry(QtCore.QRect(32, 120, 141, 61))
         self.pushButton_VisualizarSPI.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
@@ -92,19 +93,21 @@ class Ui_OpcionesInforme(object):
         self.pushButton_VisualizarSPI.clicked.connect(self.openVisualizacionWebGraficos)
         self.pushButton_VisualizarSPI.setEnabled(False)
         
+        # Botón para abrir el informe
         self.pushButton_VisualizarInforme = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_VisualizarInforme.setGeometry(QtCore.QRect(205, 120, 141, 61))
         self.pushButton_VisualizarInforme.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
         self.pushButton_VisualizarInforme.setObjectName("pushButton_VisualizarInforme")
         self.pushButton_VisualizarInforme.clicked.connect(self.funcVisualizarInforme)
 
+        # Botón para abrir la ventana de descarga de los archivos (datos e informe)
         self.pushButton_DescargarInforme_OpcionesInforme = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_DescargarInforme_OpcionesInforme.setGeometry(QtCore.QRect(378, 120, 141, 61))
         self.pushButton_DescargarInforme_OpcionesInforme.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
         self.pushButton_DescargarInforme_OpcionesInforme.setObjectName("pushButton_DescargarInforme_OpcionesInforme")
-        #self.pushButton_DescargarInforme_OpcionesInforme.clicked.connect(lambda: OpcionesInforme.close())
         self.pushButton_DescargarInforme_OpcionesInforme.clicked.connect(self.openDescargarInforme)
 
+        # Botón para volver a la ventana de inicio
         self.pushButton_VolverOpcionesInforme = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_VolverOpcionesInforme.setGeometry(QtCore.QRect(430, 250, 111, 41))
         font = QtGui.QFont()
@@ -129,6 +132,7 @@ class Ui_OpcionesInforme(object):
 
 ###################################################################################################################
 #FUNCIONES
+    # Función para visualizar el informe 
     def funcVisualizarInforme(self):
         from InputDatosPaciente import id_global_principal
         from BusquedaPaciente import id_global_busqueda
@@ -148,7 +152,6 @@ class Ui_OpcionesInforme(object):
         global ruta_relativa_informe
         ruta_relativa_informe = os.path.join(directorio_actual, nombrepdf)
 
-        #pdf = os.startfile(ruta_relativa_informe)
         subprocess.run(['xdg-open', ruta_relativa_informe])
 
 ###################################################################################################################
