@@ -7,6 +7,7 @@ class VirtualKeyboard(QWidget):
     # Señal personalizada para enviar el texto ingresado
     textEntered = pyqtSignal(str) 
 
+    # Define el target edit que lo llama 
     def __init__(self, target_edit):
         super().__init__()
         self.target_edit = target_edit
@@ -50,9 +51,11 @@ class VirtualKeyboard(QWidget):
         layout.addLayout(buttons_layout)
         self.setLayout(layout)
 
+    # Emite el char al clickear
     def on_button_click(self, char):
         self.textEntered.emit(char)
 
+    # Escribe el texto en el line Edit que corresponde 
     def on_backspace_click(self):
         current_text = self.target_edit.text()
         self.target_edit.setText(current_text[:-1])

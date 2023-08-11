@@ -2,18 +2,28 @@ import csv
 import time
 import serial
 
-arduinoData = serial.Serial('/dev/cu.usbmodem1101',115200)
+####################################################################################################################################
+
+# Puerto y baudrate del Arduino
+puerto = '/dev/cu.usbmodem1101'
+baudrate = 115200
+arduinoData = serial.Serial(puerto, baudrate)
+
 time.sleep(1)
 
-# CAMBIAR NOMBRE ARCHIVO DATOS:
+# CAMBIAR EL NOMBRE DEL ARCHIVO DE DATOS A GUARDAR:
 archivo_data = 'data.csv'
 
+# Campos de datos 
 fieldnames=["Tiempo","redVal","irVal"]
 
+# Escribe los campos en el csv 
 with open(archivo_data, 'w') as csv_file:
     csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
     csv_writer.writeheader()
 
+
+# Levanta los datos, los decodifica y los guarda
 while True:
     while (arduinoData.inWaiting()==0):
             pass

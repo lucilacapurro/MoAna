@@ -5,7 +5,11 @@ from scipy import signal
 import os
 from openpyxl import load_workbook
 
+################################################################################################################################
+# FUNCIONES:
+
 '''
+# Función para obtener el histograma 
 def funcHistograma(parametro, tipo_parametro):
   if tipo_parametro == "HBI":
     min = 20
@@ -26,6 +30,7 @@ def funcHistograma(parametro, tipo_parametro):
   TF_histograma = [[int(param), param_norm] for param, param_norm in zip(vector_parametro, vector_hist_norm)]
   return TF_histograma
 
+# Función para obtener el histograma acumulado
 def funcHistogramaAcumulado(TF_histograma):
   min = TF_histograma[0][0]
   max = TF_histograma[-1][0]
@@ -43,65 +48,73 @@ def funcHistogramaAcumulado(TF_histograma):
   return TF_histograma_acum
 '''
 
+# Función para normalizar el parámetro de entrada según su funcion de transformación
 def funcNormalizarParametro(TF_normalizacion, parametro):
   parametro = int(parametro)
   min = TF_normalizacion[0][0]
   parametro_norm = TF_normalizacion[parametro-min][1]
   return parametro_norm
 
+# Función para hacer el promedio de una lista de valores 
 def funcPromedio(vector_valores):
   prom = np.mean(vector_valores)
   return int(prom)
 
+# Función para calcular el valor del SPI instantáneo a partir de un valor de HBI y PPGA normalizado
 def funcSPIi(PPGAi_norm, HBIi_norm):
   SPIi = 100 - (0.67*PPGAi_norm+0.33*HBIi_norm)*100
   return int(SPIi)
 
+################################################################################################################################
+# GENERA LAS FUNCIONES DE TRANSFORMACIÓN:
 
-# Obtenemos los valores de HBI y PPGA de entrada:
+# Obtiene los valores de HBI y PPGA de entrada del excel de valores HBI y PPGA de registros hechos:
 directorio_actual = os.path.abspath(os.path.dirname(__file__))
 nombre_excel_normalizacion = 'Curva Normalizacion.xlsx'
 path_normalizacion = os.path.join(directorio_actual, nombre_excel_normalizacion)
 excel_normalizacion = pd.read_excel(path_normalizacion)
 
+# Obtiene las listas de los valores de los parámetros de entrada 
 lista_poblacional_HBI = excel_normalizacion['HBI'].dropna()
 lista_poblacional_PPGA = excel_normalizacion['PPGA'].dropna()
 
+# Calcula los mínimo y máximos para hacer el eje x de entrada 
+# HBI
 min_poblacional_HBI = np.min(lista_poblacional_HBI)
 max_poblacional_HBI = np.max(lista_poblacional_HBI)
 x_HBI = np.linspace(min_poblacional_HBI, max_poblacional_HBI, max_poblacional_HBI-min_poblacional_HBI+1)
 x_HBI = x_HBI.tolist()
-
+# PPGA 
 min_poblacional_PPGA = np.min(lista_poblacional_PPGA)
 max_poblacional_PPGA = np.max(lista_poblacional_PPGA)
 x_PPGA = np.linspace(min_poblacional_PPGA, max_poblacional_PPGA, max_poblacional_PPGA-min_poblacional_PPGA+1)
 x_PPGA = x_PPGA.tolist()
 
-# Obtenemos los valores de HBInorm y PPGAnorm de salida:
+# Obtiene los valores de HBInorm y PPGAnorm de salida obtenidos de la normalización gaussiana:
 directorio_actual = os.path.abspath(os.path.dirname(__file__))
 nombre_excel_normalizacion = 'Curva Normalizacion Gaussiana.xlsx'
 path_normalizacion = os.path.join(directorio_actual, nombre_excel_normalizacion)
 excel_normalizacion = pd.read_excel(path_normalizacion)
 
+# Obtiene las listas de los valores de los parámetros normalizados 
 HBI_curva_excel = np.array(excel_normalizacion['HBI'].dropna())
 PPGA_curva_excel = np.array(excel_normalizacion['PPGA'].dropna())
 
+# Hace los acumulados (valores de salida y correspondientes a los valores de entrada x)
 y_HBI = np.cumsum(HBI_curva_excel)
 y_HBI = y_HBI.tolist()
 y_PPGA = np.cumsum(PPGA_curva_excel)
 y_PPGA = y_PPGA.tolist()
-
+# Genera las transformaciones de mapeo en formato de data frame
 df_TF_HBI = pd.DataFrame({'x HBI': x_HBI, 'y HBI': y_HBI})
 df_TF_PPGA = pd.DataFrame({'x PPGA': x_PPGA, 'y PPGA': y_PPGA})
 
-
-# Guardamos las TF en los excels:
+# Guarda las TF en los excels:
 # HBI
 nombre_excel_TF_HBI = 'TF_HBI_Gaussiana.xlsx'
 path_excel_TF_HBI = os.path.join(directorio_actual, nombre_excel_TF_HBI)
 excel_TF_HBI = load_workbook(path_excel_TF_HBI)
 df_TF_HBI.to_excel(path_excel_TF_HBI, index=False, header=False)
-
 # PPGA
 nombre_excel_TF_PPGA = 'TF_PPGA_Gaussiana.xlsx'
 path_excel_TF_PPGA = os.path.join(directorio_actual, nombre_excel_TF_PPGA)
@@ -110,19 +123,22 @@ df_TF_PPGA.to_excel(path_excel_TF_PPGA, index=False, header=False)
 
 
 ############################################################################################
+# GRÁFICOS:
 
 plt.figure(figsize=(10,5))
-plt.title('Histograma Acumulado', fontsize=15)
+plt.title('Histograma Acumulado HBI', fontsize=15)
 plt.bar(x = x_HBI, height = y_HBI, width=0.8, bottom=None, align='center')
 plt.show()
 
 plt.figure(figsize=(10,5))
-plt.title('Histograma Acumulado', fontsize=15)
+plt.title('Histograma Acumulado PPGA', fontsize=15)
 plt.bar(x = x_PPGA, height = y_PPGA, width=0.8, bottom=None, align='center')
 plt.show()
 
-'''
 
+################################################################################################################################
+# PRUEBAS:
+'''
 #PPGA = [585, 607, 619, 540, 604, 588, 583, 546, 587, 573, 552]
 #HBI = [102, 99, 98, 93, 92, 93, 95, 93, 95, 98, 100]
 
@@ -149,35 +165,30 @@ PPGA = [1954, 1967, 1843, 2030, 2138, 1717, 2030, 1972, 2057, 2415, 2382, 2339, 
 HBI = [81, 81, 80, 77, 79, 78, 79, 82, 81, 84, 83, 82, 79, 78, 80, 78, 74, 76, 79, 84, 79, 74, 77, 80, 75, 80, 82, 82, 78, 82, 80, 82, 84, 80, 79, 80, 81, 77, 78, 78, 75, 77, 83, 81, 86, 89, 82, 81, 80, 77, 73, 75, 77, 75, 77, 79, 81, 77, 78, 79, 75, 75, 74, 78, 75, 78, 79, 77, 76, 77, 76, 74, 73, 74, 73, 78, 81, 79, 75, 74, 76, 78, 77, 78, 79, 78, 75, 75, 78, 77, 72, 74, 75, 75, 73, 76, 77, 75, 72, 74, 77, 80, 79, 81, 75, 73, 73, 73, 71, 74]
 # VECTOR SPI = [33, 33, 37, 36, 31, 41, 34, 32, 31, 24, 25, 26, 35, 37, 34, 36, 37, 32, 27, 23, 31, 33, 27, 25, 35, 29, 32, 38, 36, 30, 33, 24, 22, 29, 27, 28, 29, 31, 28, 31, 48, 45, 43, 46, 42, 38, 48, 36, 35, 40, 44, 44, 44, 53, 46, 46, 41, 43, 39, 42, 51, 41, 42, 38, 46, 30, 30, 36, 31, 30, 32, 33, 34, 38, 45, 44, 46, 51, 57, 47, 36, 34, 32, 31, 28, 31, 32, 31, 28, 31, 34, 31, 30, 32, 31, 28, 30, 34, 34, 30, 26, 25, 28, 24, 32, 33, 38, 53, 57, 48]
 
-#HBI_prom = funcPromedio(HBI)
-#PPGA_prom = funcPromedio(PPGA)
-#HBI_norm = funcNormalizarParametro(TF_HBI, int(HBI))
-#PPGA_norm = funcNormalizarParametro(TF_PPGA, int(PPGA))
+# Calcula los HBI y PPGA promedio de los vectores
+HBI_prom = funcPromedio(HBI)
+PPGA_prom = funcPromedio(PPGA)
+# Normaliza los parámetros 
+HBI_norm = funcNormalizarParametro(TF_HBI, int(HBI))
+PPGA_norm = funcNormalizarParametro(TF_PPGA, int(PPGA))
 
+# Crea un vector con los valores de SPI calculados
 vectorSPI = []
-
 for i in range(len(PPGA)): 
   PPGA_norm = funcNormalizarParametro(TF_PPGA, int(PPGA[i]))
   HBI_norm = funcNormalizarParametro(TF_HBI, int(HBI[i]))
   SPI = funcSPIi(PPGA_norm, HBI_norm)
   vectorSPI.append(SPI)
-
 print(vectorSPI)
-
 
 # Crear una lista de índices para el eje x
 x = range(len(vectorSPI))
-
-# Crear la figura y el gráfico de líneas
+# Crea el gráfico 
 plt.figure()
 plt.plot(x, vectorSPI)
-
-# Configurar los títulos y etiquetas de los ejes
-plt.title("Gráfico de Array")
-plt.xlabel("Índice")
-plt.ylabel("Valor")
+plt.title("Gráfico de evolución del índice SPI")
+plt.xlabel("Tiempo")
+plt.ylabel("SPI")
 plt.ylim(0,100)
-
-# Mostrar el gráfico
 plt.show()
 '''
