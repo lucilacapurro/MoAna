@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMessageBox
 
 import os
 
+##############################################################################################
 
 global listaDatosPaciente
 listaDatosPaciente = []
@@ -22,9 +23,13 @@ path_archivo_datos = ''
 global id_global_principal
 id_global_principal = ''
 
+##############################################################################################
+
 class Ui_InputDatosPaciente(object):
-    #############################################################################################
-    #Funciones para abrir otras ventanas
+
+    #Funciones para abrir otras ventanas:
+
+    # Abrir la ventana del monitoreo una vez ingresados los datos
     def openPrincipal(self):
         from Principal import Ui_DisplayPrincipal
         self.windowPrincipal = QtWidgets.QMainWindow()
@@ -32,6 +37,7 @@ class Ui_InputDatosPaciente(object):
         self.ui.setupUi(self.windowPrincipal)
         self.windowPrincipal.show()
 
+    # Volver a la ventana de inicio
     def openInicio(self):
         from Inicio import Ui_MainWindow
         self.windowInicio = QtWidgets.QMainWindow()
@@ -39,45 +45,51 @@ class Ui_InputDatosPaciente(object):
         self.ui.setupUi(self.windowInicio)
         self.windowInicio.show()
 
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+
+    # Funciones para abrir los teclados:
+
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Nombre
     def openTecladoVirtual_Nombre(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard 
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre) 
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 345)
 
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Apellido
     def openTecladoVirtual_Apellido(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard 
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido) 
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 397)
     
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit ID
     def openTecladoVirtual_ID(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard 
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID) 
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 445)
 
-    ############################################################################################
+##############################################################################################
 
     def setupUi(self, InputDatosPaciente):
         InputDatosPaciente.setObjectName("InputDatosPaciente")
-        #InputDatosPaciente.resize(774, 471)
         InputDatosPaciente.resize(1360, 700)
  
         self.centralwidget = QtWidgets.QWidget(InputDatosPaciente)
         self.centralwidget.setObjectName("centralwidget")
-        
+
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.frame.setGeometry(QtCore.QRect(304, 134, 752, 432))
+        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+
+        # Botón para volver a la ventana de inicio
         self.pushButton_VolverInputDatosPaciente = QtWidgets.QPushButton(self.centralwidget)
-        #self.pushButton_VolverInputDatosPaciente.setGeometry(QtCore.QRect(640, 390, 111, 41))
         self.pushButton_VolverInputDatosPaciente.setGeometry(QtCore.QRect(935, 513, 111, 41))
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -89,13 +101,6 @@ class Ui_InputDatosPaciente(object):
         self.pushButton_VolverInputDatosPaciente.clicked.connect(lambda: InputDatosPaciente.close())
         self.pushButton_VolverInputDatosPaciente.clicked.connect(self.openInicio)
 
-        self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(304, 134, 752, 432))
-        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
-        
         self.groupBox_InputDatosPaciente = QtWidgets.QGroupBox(self.frame)
         self.groupBox_InputDatosPaciente.setGeometry(QtCore.QRect(70, 50, 611, 301))
         font = QtGui.QFont()
@@ -104,7 +109,20 @@ class Ui_InputDatosPaciente(object):
         self.groupBox_InputDatosPaciente.setAutoFillBackground(False)
         self.groupBox_InputDatosPaciente.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.groupBox_InputDatosPaciente.setObjectName("groupBox_InputDatosPaciente")
-        
+
+        # Botón para guardar los datos una vez ingresados todos los campos (obligatorios)
+        self.pushButton_GuardarInputDatosPaciente = QtWidgets.QPushButton(self.groupBox_InputDatosPaciente)
+        self.pushButton_GuardarInputDatosPaciente.setGeometry(QtCore.QRect(380, 250, 81, 31))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_GuardarInputDatosPaciente.setFont(font)
+        self.pushButton_GuardarInputDatosPaciente.setStyleSheet("background-color: rgb(243, 243, 243);")
+        self.pushButton_GuardarInputDatosPaciente.setObjectName("pushButton_GuardarInputDatosPaciente")
+        self.pushButton_GuardarInputDatosPaciente.clicked.connect(self.funcInputIDyNombre)
+
+        # Botón para iniciar el monitoreo una vez guardados los datos
         self.pushButton_IniciarInputDatosPaciente = QtWidgets.QPushButton(self.groupBox_InputDatosPaciente)
         self.pushButton_IniciarInputDatosPaciente.setGeometry(QtCore.QRect(470, 250, 120, 31))
         font = QtGui.QFont()
@@ -119,17 +137,9 @@ class Ui_InputDatosPaciente(object):
         self.pushButton_IniciarInputDatosPaciente.clicked.connect(lambda: InputDatosPaciente.close())
         self.pushButton_IniciarInputDatosPaciente.setEnabled(False)     
 
-        self.pushButton_GuardarInputDatosPaciente = QtWidgets.QPushButton(self.groupBox_InputDatosPaciente)
-        self.pushButton_GuardarInputDatosPaciente.setGeometry(QtCore.QRect(380, 250, 81, 31))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_GuardarInputDatosPaciente.setFont(font)
-        self.pushButton_GuardarInputDatosPaciente.setStyleSheet("background-color: rgb(243, 243, 243);")
-        self.pushButton_GuardarInputDatosPaciente.setObjectName("pushButton_GuardarInputDatosPaciente")
-        self.pushButton_GuardarInputDatosPaciente.clicked.connect(self.funcInputIDyNombre)
-        
+        # Sección de ingreso de datos 
+
+        #Nombre
         self.label_Nombre = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
         self.label_Nombre.setGeometry(QtCore.QRect(21, 90, 71, 31))
         font = QtGui.QFont()
@@ -144,6 +154,7 @@ class Ui_InputDatosPaciente(object):
         self.lineEdit_Nombre.setFrame(False)
         self.lineEdit_Nombre.setObjectName("lineEdit_Nombre")
 
+        # Apellido
         self.label_Apellido = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
         self.label_Apellido.setGeometry(QtCore.QRect(21, 140, 61, 31))
         font = QtGui.QFont()
@@ -158,6 +169,7 @@ class Ui_InputDatosPaciente(object):
         self.lineEdit_Apellido.setFrame(False)
         self.lineEdit_Apellido.setObjectName("lineEdit_Apellido")
 
+        # ID
         self.label_ID = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
         self.label_ID.setGeometry(QtCore.QRect(20, 190, 30, 31))
         font = QtGui.QFont()
@@ -171,6 +183,8 @@ class Ui_InputDatosPaciente(object):
         self.lineEdit_ID.setFrame(False)
         self.lineEdit_ID.setObjectName("lineEdit_ID")
   
+
+        # Señal de aviso que los tres campos (nombre, apellido y ID) son obligatorios para poder guardar e iniciar el monitoreo
         self.label_Obligatorio = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
         self.label_Obligatorio.setGeometry(QtCore.QRect(483, 12, 110, 25))
         font = QtGui.QFont()
@@ -195,26 +209,27 @@ class Ui_InputDatosPaciente(object):
         self.pushButton_VolverInputDatosPaciente.raise_()
 
         InputDatosPaciente.setCentralWidget(self.centralwidget)
-        
         self.statusbar = QtWidgets.QStatusBar(InputDatosPaciente)
         self.statusbar.setObjectName("statusbar")
         InputDatosPaciente.setStatusBar(self.statusbar)
-
         self.retranslateUi(InputDatosPaciente)
         QtCore.QMetaObject.connectSlotsByName(InputDatosPaciente)
 
 
 ###############################################################################################################################
 #FUNCIONES
-    # HAGO FUNCION PARA CHEQUEAR QUE PONGAN ID y NOMBRE
-    def funcInputIDyNombre(self): # se debe llamar a esta funcion cuando se quieren guardar los datos del paciente
+    # Función para chequear que se ingresen los tres campos obligatorios al querer guardar los datos del paciente
+    def funcInputIDyNombre(self):
+        # Se inhabilita la edición de los campos 
         self.lineEdit_Nombre.setEnabled(False)
         self.lineEdit_Apellido.setEnabled(False)
         self.lineEdit_ID.setEnabled(False)
 
+        # Se verifica que se hayan ingresado correctamente los tres campos: nombre, apellido, ID 
         nombre = self.lineEdit_Nombre.text()
         apellido = self.lineEdit_Apellido.text()
         ID = self.lineEdit_ID.text()
+        # En caso de no haber ingresado alguno de los campos, se muestran los mensajes de error correspondientes y se vuelven a habilitar los campos de edición 
         if nombre == "" or apellido == "" or ID == "":
             if nombre == "":
                 pop_up = QMessageBox()
@@ -243,10 +258,11 @@ class Ui_InputDatosPaciente(object):
                 self.lineEdit_Nombre.setEnabled(True)
                 self.lineEdit_Apellido.setEnabled(True)
                 self.lineEdit_ID.setEnabled(True)
+        # En caso de que los tres campos estén ingresados, se guardan los datos del paciente 
         else:
             self.funcGuardarDatosPaciente()
 
-
+    # Función para guardar los datos del paciente una vez completados y habilitar el botón de iniciar el monitoreo
     def funcGuardarDatosPaciente(self):
         nombre = self.lineEdit_Nombre.text()
         apellido = self.lineEdit_Apellido.text()
@@ -262,6 +278,7 @@ class Ui_InputDatosPaciente(object):
         pop_up.setText("Los datos del paciente han sido guardados correctamente. Ya puede iniciar el monitoreo")
         pop_up.exec_()              
 
+        # Deshabilita el botón de guardar los datos y habilita el botón de iniciar el monitoreo
         self.pushButton_IniciarInputDatosPaciente.setEnabled(True)
         self.pushButton_GuardarInputDatosPaciente.setEnabled(False)     
 
@@ -292,15 +309,15 @@ class Ui_InputDatosPaciente(object):
 
     # Funciones para actualizar los QLineEdit con el texto ingresado desde el teclado virtual
     def update_line_edit_Nombre(self, char):
-        current_text = self.lineEdit_Nombre.text()  # El sender es el QLineEdit que emitió la señal
+        current_text = self.lineEdit_Nombre.text()  
         self.lineEdit_Nombre.setText(current_text + char)
     
     def update_line_edit_Apellido(self, char):
-        current_text = self.lineEdit_Apellido.text()  # El sender es el QLineEdit que emitió la señal
+        current_text = self.lineEdit_Apellido.text()  
         self.lineEdit_Apellido.setText(current_text + char)
 
     def update_line_edit_ID(self, char):
-        current_text = self.lineEdit_ID.text()  # El sender es el QLineEdit que emitió la señal
+        current_text = self.lineEdit_ID.text()  
         self.lineEdit_ID.setText(current_text + char)
     
 

@@ -10,12 +10,18 @@ import plotly.express as px
 import pandas as pd 
 import os
 
+#############################################################################################################################
+
 global id_global_busqueda
 id_global_busqueda = ""
 
+#############################################################################################################################
+
 class Ui_BusquedaPacientes(object):
 
-    #Fucniones para abrir otras main windows
+    # Funciones para abrir otras ventanas:
+
+    # Ventana de inicio
     def openInicio(self):
         from Inicio import Ui_MainWindow
         self.windowInicio = QtWidgets.QMainWindow()
@@ -23,6 +29,7 @@ class Ui_BusquedaPacientes(object):
         self.ui.setupUi(self.windowInicio)
         self.windowInicio.show()
 
+    # Ventana de opciones de informe para el registro seleccionado
     def openOpcionesInforme(self):
         from OpcionesInforme import Ui_OpcionesInforme
         self.windowOpcionesInforme = QtWidgets.QMainWindow()
@@ -30,73 +37,74 @@ class Ui_BusquedaPacientes(object):
         self.ui.setupUi(self.windowOpcionesInforme)
         self.windowOpcionesInforme.show()
 
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Funciones para abrir los teclados:
+
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Nombre
     def openTecladoVirtual_Nombre(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard  
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre)  
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 232)
 
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Apellido
     def openTecladoVirtual_Apellido(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard  
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido)  
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 280)
     
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit ID
     def openTecladoVirtual_ID(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard  
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID)  
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 325)
     
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Dia
     def openTecladoVirtual_Dia(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Dia)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard  
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Dia)  
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 370)
 
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Mes
     def openTecladoVirtual_Mes(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Mes)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard  
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Mes)  
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 370)
     
-    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit
+    # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Año
     def openTecladoVirtual_Ao(self, target_edit):
-        from TecladoVirtual import VirtualKeyboard  # Importa el módulo VirtualKeyboard
-        self.virtual_keyboard = VirtualKeyboard(target_edit)  # Pasa el QLineEdit como argumento
-        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Ao)  # Conecta la señal al slot de la MainWindow
+        from TecladoVirtual import VirtualKeyboard  
+        self.virtual_keyboard = VirtualKeyboard(target_edit)  
+        self.virtual_keyboard.textEntered.connect(self.update_line_edit_Ao)  
         self.virtual_keyboard.show()
-        # Establecer la posición de la nueva ventana en la pantalla
         self.virtual_keyboard.move(277, 370)
 
 
-    ##############################################################################
+#############################################################################################################################
 
     def setupUi(self, BusquedaPacientes):
         BusquedaPacientes.setObjectName("BusquedaPacientes")
-        #BusquedaPacientes.resize(790, 511)
         BusquedaPacientes.resize(1360, 700)
 
         self.centralwidget = QtWidgets.QWidget(BusquedaPacientes)
         self.centralwidget.setObjectName("centralwidget")
         
+        self.frame = QtWidgets.QFrame(self.centralwidget)
+        self.frame.setGeometry(QtCore.QRect(294, 104, 772, 492))
+        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+
         self.groupBox_BusquedaPaciente = QtWidgets.QGroupBox(self.centralwidget)
-        #self.groupBox_BusquedaPaciente.setGeometry(QtCore.QRect(20, 20, 631, 471))
         self.groupBox_BusquedaPaciente.setGeometry(QtCore.QRect(306, 114, 632, 472))
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -105,6 +113,7 @@ class Ui_BusquedaPacientes(object):
         self.groupBox_BusquedaPaciente.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.groupBox_BusquedaPaciente.setObjectName("groupBox_BusquedaPaciente")
         
+        # Sección buscar Nombre 
         self.label_BuscarNombre = QtWidgets.QLabel(self.groupBox_BusquedaPaciente)
         self.label_BuscarNombre.setGeometry(QtCore.QRect(10, 40, 57, 41))
         font = QtGui.QFont()
@@ -118,6 +127,7 @@ class Ui_BusquedaPacientes(object):
         self.lineEdit_BuscarNombre.setFrame(False)
         self.lineEdit_BuscarNombre.setObjectName("lineEdit_BuscarNombre")
 
+        # Sección buscar Apellido 
         self.label_BuscarApellido = QtWidgets.QLabel(self.groupBox_BusquedaPaciente)
         self.label_BuscarApellido.setGeometry(QtCore.QRect(10, 85, 57, 41))
         font = QtGui.QFont()
@@ -131,6 +141,7 @@ class Ui_BusquedaPacientes(object):
         self.lineEdit_BuscarApellido.setFrame(False)
         self.lineEdit_BuscarApellido.setObjectName("lineEdit_BuscarApellido")
 
+        # Sección buscar ID
         self.label_BuscarID = QtWidgets.QLabel(self.groupBox_BusquedaPaciente)
         self.label_BuscarID.setGeometry(QtCore.QRect(10, 130, 26, 41))
         font = QtGui.QFont()
@@ -144,50 +155,53 @@ class Ui_BusquedaPacientes(object):
         self.lineEdit_BuscarID.setFrame(False)
         self.lineEdit_BuscarID.setObjectName("lineEdit_BuscarID")
         
+        # Sección buscar Fecha: día / mes / año
         self.label_BuscarFecha = QtWidgets.QLabel(self.groupBox_BusquedaPaciente)
         self.label_BuscarFecha.setGeometry(QtCore.QRect(11, 175, 49, 51))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_BuscarFecha.setFont(font)
         self.label_BuscarFecha.setObjectName("label_BuscarFecha")
-        
+        # Dia
         self.lineEdit_BuscarDia = QtWidgets.QLineEdit(self.groupBox_BusquedaPaciente)
         self.lineEdit_BuscarDia.setGeometry(QtCore.QRect(80, 185, 41, 29))
         self.lineEdit_BuscarDia.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.lineEdit_BuscarDia.setFrame(False)
         self.lineEdit_BuscarDia.setObjectName("lineEdit_BuscarDia")
-
-        self.lineEdit_BuscarMes = QtWidgets.QLineEdit(self.groupBox_BusquedaPaciente)
-        self.lineEdit_BuscarMes.setGeometry(QtCore.QRect(150, 185, 41, 29))
-        self.lineEdit_BuscarMes.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.lineEdit_BuscarMes.setFrame(False)
-        self.lineEdit_BuscarMes.setObjectName("lineEdit_BuscarMes")
-        
-        self.lineEdit_BuscarAo = QtWidgets.QLineEdit(self.groupBox_BusquedaPaciente)
-        self.lineEdit_BuscarAo.setGeometry(QtCore.QRect(220, 185, 61, 29))
-        self.lineEdit_BuscarAo.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.lineEdit_BuscarAo.setFrame(False)
-        self.lineEdit_BuscarAo.setObjectName("lineEdit_BuscarAo")
-        
+        # /
         self.label_Barra = QtWidgets.QLabel(self.groupBox_BusquedaPaciente)
         self.label_Barra.setGeometry(QtCore.QRect(130, 175, 16, 51))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.label_Barra.setFont(font)
         self.label_Barra.setObjectName("label_Barra")
-        
+        # Mes
+        self.lineEdit_BuscarMes = QtWidgets.QLineEdit(self.groupBox_BusquedaPaciente)
+        self.lineEdit_BuscarMes.setGeometry(QtCore.QRect(150, 185, 41, 29))
+        self.lineEdit_BuscarMes.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.lineEdit_BuscarMes.setFrame(False)
+        self.lineEdit_BuscarMes.setObjectName("lineEdit_BuscarMes")
+        # / 
         self.label_Barra_2 = QtWidgets.QLabel(self.groupBox_BusquedaPaciente)
         self.label_Barra_2.setGeometry(QtCore.QRect(200, 175, 16, 51))
         font = QtGui.QFont()
         font.setPointSize(16)
         self.label_Barra_2.setFont(font)
         self.label_Barra_2.setObjectName("label_Barra_2")
-        
+        # Año
+        self.lineEdit_BuscarAo = QtWidgets.QLineEdit(self.groupBox_BusquedaPaciente)
+        self.lineEdit_BuscarAo.setGeometry(QtCore.QRect(220, 185, 61, 29))
+        self.lineEdit_BuscarAo.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.lineEdit_BuscarAo.setFrame(False)
+        self.lineEdit_BuscarAo.setObjectName("lineEdit_BuscarAo")
+    
+        # Listado de registros 
         self.listWidget_ListadoPacientes = QtWidgets.QListWidget(self.groupBox_BusquedaPaciente)
         self.listWidget_ListadoPacientes.setGeometry(QtCore.QRect(10, 260, 611, 155))
         self.listWidget_ListadoPacientes.setObjectName("listWidget_ListadoPacientes")
         self.listWidget_ListadoPacientes.itemSelectionChanged.connect(self.funcSeleccionarRegistro)
-        
+
+        # Botón para buscar 
         self.pushButton_BuscarPaciente = QtWidgets.QPushButton(self.groupBox_BusquedaPaciente)
         self.pushButton_BuscarPaciente.setGeometry(QtCore.QRect(540, 220, 81, 31))
         font = QtGui.QFont()
@@ -200,7 +214,8 @@ class Ui_BusquedaPacientes(object):
         self.pushButton_BuscarPaciente.setAutoDefault(False)
         self.pushButton_BuscarPaciente.setObjectName("pushButton_BuscarPaciente")
         self.pushButton_BuscarPaciente.clicked.connect(self.funcBusquedaRegistros)
-        
+
+        # Botón para seleccionar un registro
         self.pushButton_SeleccionarPaciente = QtWidgets.QPushButton(self.groupBox_BusquedaPaciente)
         self.pushButton_SeleccionarPaciente.setGeometry(QtCore.QRect(540, 425, 81, 31))
         font = QtGui.QFont()
@@ -217,8 +232,8 @@ class Ui_BusquedaPacientes(object):
         self.pushButton_SeleccionarPaciente.clicked.connect(self.openOpcionesInforme)
         self.pushButton_SeleccionarPaciente.clicked.connect(lambda: BusquedaPacientes.close())
 
+        # Botón para volver a la ventana de inicio 
         self.pushButton_VolverBusquedaPaciente = QtWidgets.QPushButton(self.centralwidget)
-        #self.pushButton_VolverBusquedaPaciente.setGeometry(QtCore.QRect(660, 450, 111, 41))
         self.pushButton_VolverBusquedaPaciente.setGeometry(QtCore.QRect(946, 544, 111, 41))
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -230,15 +245,7 @@ class Ui_BusquedaPacientes(object):
         self.pushButton_VolverBusquedaPaciente.clicked.connect(lambda: BusquedaPacientes.close())
         self.pushButton_VolverBusquedaPaciente.clicked.connect(self.openInicio)
 
-        self.frame = QtWidgets.QFrame(self.centralwidget)
-        #self.frame.setGeometry(QtCore.QRect(10, 10, 771, 491))
-        self.frame.setGeometry(QtCore.QRect(294, 104, 772, 492))
-        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
-
-        # Conecta la señal selectionChanged del QLineEdit para abrir el teclado virtual
+        # Conecta la señal selectionChanged del QLineEdit para abrir el teclado virtual para cada campo de búsqueda
         self.lineEdit_BuscarNombre.selectionChanged.connect(lambda: self.openTecladoVirtual_Nombre(self.lineEdit_BuscarNombre))
         self.lineEdit_BuscarApellido.selectionChanged.connect(lambda: self.openTecladoVirtual_Apellido(self.lineEdit_BuscarApellido))
         self.lineEdit_BuscarID.selectionChanged.connect(lambda: self.openTecladoVirtual_ID(self.lineEdit_BuscarID))
@@ -254,7 +261,7 @@ class Ui_BusquedaPacientes(object):
         self.retranslateUi(BusquedaPacientes)
         QtCore.QMetaObject.connectSlotsByName(BusquedaPacientes)
 
-#################################################################################
+#############################################################################################################################
 # FUNCIONES:
 
     # Funciones para actualizar los QLineEdit con el texto ingresado desde el teclado virtual
@@ -282,7 +289,7 @@ class Ui_BusquedaPacientes(object):
         current_text = self.lineEdit_BuscarAo.text()
         self.lineEdit_BuscarAo.setText(current_text + char)
 
-
+    # Función para realizar la búsqueda de registros según los filtros aplicados a los campos de búsqueda
     def funcBusquedaRegistros(self):
         self.lineEdit_BuscarNombre.setEnabled(False)
         self.lineEdit_BuscarApellido.setEnabled(False)
@@ -294,7 +301,7 @@ class Ui_BusquedaPacientes(object):
         # primero borro todo lo que haya en la list widget, por las dudas de que haya hecho una búsqueda previa
         self.listWidget_ListadoPacientes.clear()
 
-        # solo identifica el string de nombre ingresado exacto igual salvo mayusculas --> se puede mejorar
+        # levanta los filtros ingresados
         nombre = self.lineEdit_BuscarNombre.text()
         apellido = self.lineEdit_BuscarApellido.text()
         id = self.lineEdit_BuscarID.text()
@@ -303,12 +310,13 @@ class Ui_BusquedaPacientes(object):
         dia = self.lineEdit_BuscarDia.text()
         fecha = ''
 
+        # Obtiene los registros de la base de datos
         directorio_actual = os.path.abspath(os.path.dirname(__file__))
         excel_registros = 'Registro Pacientes.xlsx'
         path_excel_registros = os.path.join(directorio_actual, excel_registros)
-
         df_lista_busqueda = pd.read_excel(path_excel_registros)
 
+        # Hace los chequeos de errores de los ingresos y aplica los filtros
         if ano!='' or mes!='' or dia!='':
             if ano!='':
                 try: 
@@ -418,6 +426,7 @@ class Ui_BusquedaPacientes(object):
             id = str(id)
             df_lista_busqueda = df_lista_busqueda[df_lista_busqueda.id == id]
 
+        # Si no se encuentran resultados para la búsqueda
         if df_lista_busqueda.shape[0]==0:
             pop_up = QMessageBox()
             pop_up.setIcon(QMessageBox.Information)
@@ -430,6 +439,7 @@ class Ui_BusquedaPacientes(object):
             self.lineEdit_BuscarDia.setEnabled(True)
             self.lineEdit_BuscarMes.setEnabled(True)
             self.lineEdit_BuscarAo.setEnabled(True)
+        # Lista los resultados para la búsqueda
         else:
             for index, row in df_lista_busqueda.iterrows():
                 nombre = row['nombre']
@@ -447,6 +457,7 @@ class Ui_BusquedaPacientes(object):
                 self.lineEdit_BuscarMes.setEnabled(True)
                 self.lineEdit_BuscarAo.setEnabled(True)
 
+    # Función para seleccionar un registro
     def funcSeleccionarRegistro(self):
         registro_seleccionado = self.listWidget_ListadoPacientes.currentItem().text()
         subcadenas_registro = registro_seleccionado.split("      ")
@@ -461,16 +472,17 @@ class Ui_BusquedaPacientes(object):
         id_global_busqueda = id+" "+str(fecha)+" "+hora_id
 
         self.pushButton_SeleccionarPaciente.setEnabled(True)
-        
+
+    # Función para hacer los gráficos del registro seleccionado
     def funcHacerGraficosRegistro(self):
-        #Ejecuto GraficoSPI.py
         directorio_actual = os.path.abspath(os.path.dirname(__file__))
         nombre_archivo_ejecutar_GraficoSPI = 'GraficoSPI.py'
         path_archivo_ejecutar_GraficoSPI = os.path.join(directorio_actual, nombre_archivo_ejecutar_GraficoSPI)
         exec(open(path_archivo_ejecutar_GraficoSPI).read())
 
 
-#################################################################################################
+#############################################################################################################################
+
     def retranslateUi(self, BusquedaPacientes):
         _translate = QtCore.QCoreApplication.translate
         BusquedaPacientes.setWindowTitle(_translate("BusquedaPacientes", "MainWindow"))

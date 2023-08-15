@@ -1,12 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 import PyQt5.QtWebEngineWidgets
-
-from DescargarInforme import Ui_DescargarInforme
-
 import os 
 
+from DescargarInforme import Ui_DescargarInforme
 from GraficoSPI import SPIEstados, SPIFranjas, PorcentajesSPI
+
+#############################################################################################
 
 global id_seleccionado
 id_seleccionado = ""
@@ -14,15 +13,20 @@ id_seleccionado = ""
 global ruta_relativa_informe
 ruta_relativa_informe = ""
 
+#############################################################################################
+
 class Ui_OpcionesInforme(object):
-    #############################################################################################
-    #Funciones para abrir otras ventanas
+    
+    # Funciones para abrir otras ventanas: 
+
+    # Abrir la ventana de descarga del informe
     def openDescargarInforme(self):
         self.windowDescargarInforme = QtWidgets.QMainWindow()
         self.ui = Ui_DescargarInforme()
         self.ui.setupUi(self.windowDescargarInforme)
         self.windowDescargarInforme.show()
 
+    # Volver a la ventana de inicio
     def openInicio(self):
         from Inicio import Ui_MainWindow
         self.windowInicio = QtWidgets.QMainWindow()
@@ -30,6 +34,7 @@ class Ui_OpcionesInforme(object):
         self.ui.setupUi(self.windowInicio)
         self.windowInicio.show()
 
+    # Abrir la ventana de visualizaciones de gráficos
     def openVisualizacionWebGraficos(self):
         from VisualizacionWebGraficos import Ui_VisualizacionGraficos
         self.windowVisualizarWeb = QtWidgets.QMainWindow()
@@ -37,30 +42,14 @@ class Ui_OpcionesInforme(object):
         self.ui.setupUi(self.windowVisualizarWeb)
         self.windowVisualizarWeb.show()
 
-    #############################################################################################
+#############################################################################################
 
     def setupUi(self, OpcionesInforme):
         OpcionesInforme.setObjectName("OpcionesInforme")
-        #OpcionesInforme.resize(592, 383)
         OpcionesInforme.resize(1360, 700)
 
         self.centralwidget = QtWidgets.QWidget(OpcionesInforme)
         self.centralwidget.setObjectName("centralwidget")
-        
-        self.frame2 = QtWidgets.QFrame(self.centralwidget)
-        #self.frame2.setGeometry(QtCore.QRect(10, 10, 751, 431))
-        self.frame2.setGeometry(QtCore.QRect(384, 169, 592, 362))
-        self.frame2.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.frame2.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame2.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame2.setObjectName("frame2")
-        self.frame2.raise_()
-
-        self.groupBox_OpcionesInforme = QtWidgets.QGroupBox(self.frame2)
-        self.groupBox_OpcionesInforme.setGeometry(QtCore.QRect(10, 10, 571, 341))
-        #self.groupBox_OpcionesInforme.setGeometry(QtCore.QRect(394, 179, 572, 342))
-        self.groupBox_OpcionesInforme.setStyleSheet("background-color: rgb(255, 255, 255);\n""font: 14pt \"MS Shell Dlg 2\";")
-        self.groupBox_OpcionesInforme.setObjectName("groupBox_OpcionesInforme")
         
         self.frame = QtWidgets.QFrame(self.groupBox_OpcionesInforme)
         self.frame.setGeometry(QtCore.QRect(10, 30, 551, 301))
@@ -69,32 +58,48 @@ class Ui_OpcionesInforme(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
         
+        self.frame2 = QtWidgets.QFrame(self.centralwidget)
+        self.frame2.setGeometry(QtCore.QRect(384, 169, 592, 362))
+        self.frame2.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.frame2.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame2.setObjectName("frame2")
+        self.frame2.raise_()
+
         self.frame_OpcionesInforme = QtWidgets.QFrame(self.frame)
         self.frame_OpcionesInforme.setGeometry(QtCore.QRect(0, 0, 551, 301))
         self.frame_OpcionesInforme.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.frame_OpcionesInforme.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_OpcionesInforme.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_OpcionesInforme.setObjectName("frame_OpcionesInforme")
-        
+
+        self.groupBox_OpcionesInforme = QtWidgets.QGroupBox(self.frame2)
+        self.groupBox_OpcionesInforme.setGeometry(QtCore.QRect(10, 10, 571, 341))
+        self.groupBox_OpcionesInforme.setStyleSheet("background-color: rgb(255, 255, 255);\n""font: 14pt \"MS Shell Dlg 2\";")
+        self.groupBox_OpcionesInforme.setObjectName("groupBox_OpcionesInforme")
+
+        # Botón para abrir la ventana de visualizaciones de gráficos
         self.pushButton_VisualizarSPI = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_VisualizarSPI.setGeometry(QtCore.QRect(32, 120, 141, 61))
         self.pushButton_VisualizarSPI.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
         self.pushButton_VisualizarSPI.setObjectName("pushButton_VisualizarSPI")
         self.pushButton_VisualizarSPI.clicked.connect(self.openVisualizacionWebGraficos)
 
+        # Botón para abrir el informe
         self.pushButton_VisualizarInforme = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_VisualizarInforme.setGeometry(QtCore.QRect(205, 120, 141, 61))
         self.pushButton_VisualizarInforme.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
         self.pushButton_VisualizarInforme.setObjectName("pushButton_VisualizarInforme")
         self.pushButton_VisualizarInforme.clicked.connect(self.funcVisualizarInforme)
 
+        # Botón para abrir la ventana de descarga de los archivos (datos e informe)
         self.pushButton_DescargarInforme_OpcionesInforme = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_DescargarInforme_OpcionesInforme.setGeometry(QtCore.QRect(378, 120, 141, 61))
         self.pushButton_DescargarInforme_OpcionesInforme.setStyleSheet("font: 75 12pt \"MS Shell Dlg 2\";\n""background-color: rgb(132, 132, 132);\n""color: rgb(255, 255, 255);")
         self.pushButton_DescargarInforme_OpcionesInforme.setObjectName("pushButton_DescargarInforme_OpcionesInforme")
-        #self.pushButton_DescargarInforme_OpcionesInforme.clicked.connect(lambda: OpcionesInforme.close())
         self.pushButton_DescargarInforme_OpcionesInforme.clicked.connect(self.openDescargarInforme)
 
+        # Botón para volver a la ventana de inicio
         self.pushButton_VolverOpcionesInforme = QtWidgets.QPushButton(self.frame_OpcionesInforme)
         self.pushButton_VolverOpcionesInforme.setGeometry(QtCore.QRect(430, 250, 111, 41))
         font = QtGui.QFont()
@@ -119,6 +124,7 @@ class Ui_OpcionesInforme(object):
 
 ###################################################################################################################
 #FUNCIONES
+    # Función para visualizar el informe 
     def funcVisualizarInforme(self):
         from InputDatosPaciente import id_global_principal
         from BusquedaPaciente import id_global_busqueda
@@ -142,6 +148,7 @@ class Ui_OpcionesInforme(object):
 
 
 ###################################################################################################################
+
     def retranslateUi(self, OpcionesInforme):
         _translate = QtCore.QCoreApplication.translate
         OpcionesInforme.setWindowTitle(_translate("OpcionesInforme", "MainWindow"))

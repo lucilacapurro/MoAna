@@ -2,10 +2,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
 import os
-
 import win32file
 import win32api
 import shutil
+
+#########################################################################################################################
 
 # Obtén la ruta absoluta del directorio actual
 directorio_actual = os.path.abspath(os.path.dirname(__file__))
@@ -13,14 +14,19 @@ directorio_actual = os.path.abspath(os.path.dirname(__file__))
 global id_seleccionado
 id_seleccionado = ""
 
+#########################################################################################################################
+
 class Ui_DescargarInforme(object):
 
+    # Función para volver a la ventana de opciones informe 
     def openOpcionesInforme(self):
         from OpcionesInforme import Ui_OpcionesInforme
         self.windowOpcionesInforme = QtWidgets.QMainWindow()
         self.ui = Ui_OpcionesInforme()
         self.ui.setupUi(self.windowOpcionesInforme)
         self.windowOpcionesInforme.show()
+
+#########################################################################################################################
 
     def setupUi(self, DescargarInforme):
         DescargarInforme.setObjectName("DescargarInforme")
@@ -46,11 +52,13 @@ class Ui_DescargarInforme(object):
         self.label_DescargarInforme.setStyleSheet("font: 9pt \"MS Shell Dlg 2\";")
         self.label_DescargarInforme.setObjectName("label_DescargarInforme")
         
+        # Listado de memorias externas disponibles
         self.listWidget_DescargarInforme = QtWidgets.QListWidget(self.groupBox_DescargarInforme)
         self.listWidget_DescargarInforme.setGeometry(QtCore.QRect(30, 77, 541, 191))
         self.listWidget_DescargarInforme.setObjectName("listWidget_DescargarInforme")
         self.listWidget_DescargarInforme.itemClicked.connect(self.funcPendriveSeleccionado)
 
+        # Botón para descargar los archivos en la memoria externa seleccionada
         self.pushButton_Descargar_DescargarInforme = QtWidgets.QPushButton(self.groupBox_DescargarInforme)
         self.pushButton_Descargar_DescargarInforme.setGeometry(QtCore.QRect(460, 280, 111, 41))
         font = QtGui.QFont()
@@ -66,6 +74,7 @@ class Ui_DescargarInforme(object):
         self.pushButton_Descargar_DescargarInforme.clicked.connect(self.descargar_pdf_a_pendrive)
         self.pushButton_Descargar_DescargarInforme.clicked.connect(lambda: DescargarInforme.close())
 
+        # Botón para volver a la ventana de opciones de informe 
         self.pushButton_Cancelar_DescargarInforme = QtWidgets.QPushButton(self.frame_DescargarInforme)
         self.pushButton_Cancelar_DescargarInforme.setGeometry(QtCore.QRect(620, 330, 91, 31))
         font = QtGui.QFont()
@@ -88,11 +97,13 @@ class Ui_DescargarInforme(object):
         self.retranslateUi(DescargarInforme)
         QtCore.QMetaObject.connectSlotsByName(DescargarInforme)
 
-        # Llamar a la función para detectar el pendrive en Windows
+        # Llama a la función para detectar las memorias externas 
         self.detectar_pendrive_windows()
 
 #####################################################################################################################
 #FUNCIONES
+
+    # Función para detectar las memorias externas y listarlas en la list widget
     def detectar_pendrive_windows(self):
         drive_list = []
         drive_types = win32api.GetLogicalDriveStrings()
@@ -100,7 +111,6 @@ class Ui_DescargarInforme(object):
 
         for drive in drives:
             drive_type = win32file.GetDriveType(drive)
-
             if drive_type == win32file.DRIVE_REMOVABLE:
                 drive_info = win32api.GetVolumeInformation(drive)
                 drive_name = drive_info[0]
@@ -113,10 +123,12 @@ class Ui_DescargarInforme(object):
         return drive_list
 
 
+    # Función que habilita el botón de Descargar una vez seleccionada una memoria externa
     def funcPendriveSeleccionado(self):
         self.pushButton_Descargar_DescargarInforme.setEnabled(True)
 
 
+    # Función para descargar los archivos (datos e informe) a la memoria externa una vez presionado el botón Descargar
     def descargar_pdf_a_pendrive(self):
         from InputDatosPaciente import id_global_principal
         from BusquedaPaciente import id_global_busqueda
@@ -130,7 +142,7 @@ class Ui_DescargarInforme(object):
         pendrive = self.listWidget_DescargarInforme.currentItem().text()
         ruta_pendrive = pendrive.split("Ruta: ")[1] 
 
-        #Busco en el directorio el archivo que quiero guardar en el pendrive
+        #Busco en los directorios los archivos que quiero guardar en el pendrive
         nombre_pdf = 'Informe ' + id_seleccionado + '.pdf'
         nombre_csv = 'Datos '+ id_seleccionado + '.csv'
         ruta_archivo_pdf = os.path.join(directorio_actual, nombre_pdf)
@@ -144,6 +156,7 @@ class Ui_DescargarInforme(object):
         pop_up.setText("El informe y los datos se ha descargado correctamente.")
         pop_up.setStandardButtons(QMessageBox.Ok)
         pop_up.exec_()
+
 #####################################################################################################################
 
     def retranslateUi(self, DescargarInforme):

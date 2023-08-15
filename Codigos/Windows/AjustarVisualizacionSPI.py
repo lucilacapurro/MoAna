@@ -1,9 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
+#############################################################################################################################
 
 global ajustes_graf_SPI
 ajustes_graf_SPI = 5
+
+#############################################################################################################################
 
 class Ui_AjusteVisualizacionGraficaSPI(object):
     def setupUi(self, AjusteVisualizacionGraficaSPI):
@@ -22,17 +25,6 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
         self.groupBox_AjusteVisualizacionSPI.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.groupBox_AjusteVisualizacionSPI.setObjectName("groupBox_AjusteVisualizacionSPI")
         
-        self.pushButton_GuardarAjusteVisualizacionSPI = QtWidgets.QPushButton(self.groupBox_AjusteVisualizacionSPI)
-        self.pushButton_GuardarAjusteVisualizacionSPI.setGeometry(QtCore.QRect(420, 100, 81, 31))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        font.setBold(False)
-        font.setWeight(50)
-        self.pushButton_GuardarAjusteVisualizacionSPI.setFont(font)
-        self.pushButton_GuardarAjusteVisualizacionSPI.setStyleSheet("background-color: rgb(243, 243, 243);")
-        self.pushButton_GuardarAjusteVisualizacionSPI.setObjectName("pushButton_GuardarAjusteVisualizacionSPI")
-        self.pushButton_GuardarAjusteVisualizacionSPI.clicked.connect(self.funcChequearAjustesSPI)
-        
         self.label_VentanaTiempoSPI = QtWidgets.QLabel(self.groupBox_AjusteVisualizacionSPI)
         self.label_VentanaTiempoSPI.setGeometry(QtCore.QRect(12, 50, 140, 31))
         font = QtGui.QFont()
@@ -40,6 +32,7 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
         self.label_VentanaTiempoSPI.setFont(font)
         self.label_VentanaTiempoSPI.setObjectName("label_VentanaTiempoSPI")
         
+        # Combo Box de opciones de ventanas de tiempo disponibles para seleccionar
         self.comboBox_VentanaTiempoSPI = QtWidgets.QComboBox(self.groupBox_AjusteVisualizacionSPI)
         self.comboBox_VentanaTiempoSPI.setGeometry(QtCore.QRect(160, 50, 250, 31))
         font = QtGui.QFont()
@@ -63,33 +56,34 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
         self.comboBox_VentanaTiempoSPI.addItem("")
         self.comboBox_VentanaTiempoSPI.addItem("")
 
-        self.label_Obligatorio = QtWidgets.QLabel(self.groupBox_AjusteVisualizacionSPI)
-        self.label_Obligatorio.setGeometry(QtCore.QRect(395, 12, 110, 25))
+        # Botón para Guardar Ajuste de visualizacion seleccionado
+        self.pushButton_GuardarAjusteVisualizacionSPI = QtWidgets.QPushButton(self.groupBox_AjusteVisualizacionSPI)
+        self.pushButton_GuardarAjusteVisualizacionSPI.setGeometry(QtCore.QRect(420, 100, 81, 31))
         font = QtGui.QFont()
-        font.setPointSize(8)
-        self.label_Obligatorio.setFont(font)
-        self.label_Obligatorio.setObjectName("label_Obligatorio")
-        self.label_Obligatorio.raise_()
-
-        AjusteVisualizacionGraficaSPI.setCentralWidget(self.centralwidget)
+        font.setPointSize(10)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushButton_GuardarAjusteVisualizacionSPI.setFont(font)
+        self.pushButton_GuardarAjusteVisualizacionSPI.setStyleSheet("background-color: rgb(243, 243, 243);")
+        self.pushButton_GuardarAjusteVisualizacionSPI.setObjectName("pushButton_GuardarAjusteVisualizacionSPI")
+        self.pushButton_GuardarAjusteVisualizacionSPI.clicked.connect(self.funcChequearAjustesSPI)
         
+        AjusteVisualizacionGraficaSPI.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(AjusteVisualizacionGraficaSPI)
         self.statusbar.setObjectName("statusbar")
-        
         AjusteVisualizacionGraficaSPI.setStatusBar(self.statusbar)
-
         self.retranslateUi(AjusteVisualizacionGraficaSPI)
         QtCore.QMetaObject.connectSlotsByName(AjusteVisualizacionGraficaSPI)
 
 ##############################################################################################################################
 #FUNCIONES
+    # Función que trasforma las frases "x minutos u horas" a cantidad de minutos y ajusta el eje del gráfico
     def funcChequearAjustesSPI(self): 
         VentanaTiempoSPI = int(self.comboBox_VentanaTiempoSPI.currentText().split(" ")[0])
 
         if VentanaTiempoSPI not in [5, 15, 30, 45]:
             VentanaTiempoSPI *= 60 # pasamos las horas a minutos 
 
-        print(VentanaTiempoSPI)
         global ajustes_graf_SPI
         ajustes_graf_SPI = VentanaTiempoSPI 
 
@@ -108,7 +102,6 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
         AjusteVisualizacionGraficaSPI.setWindowTitle(_translate("AjusteVisualizacionGraficaSPI", "MainWindow"))
         self.groupBox_AjusteVisualizacionSPI.setTitle(_translate("AjusteVisualizacionGraficaSPI", "Ajuste visualización gráfica SPI"))
         self.pushButton_GuardarAjusteVisualizacionSPI.setText(_translate("AjusteVisualizacionGraficaSPI", "Guardar"))
-        self.label_Obligatorio.setText(_translate("AjusteVisualizacionGraficaSPI", "* Campos obligatorios"))
         self.label_VentanaTiempoSPI.setText(_translate("AjusteVisualizacionGraficaSPI", "Ventana de tiempo*: ")) 
         self.comboBox_VentanaTiempoSPI.setItemText(0, _translate("AjusteVisualizacionGraficaSPI", "5 minutos"))
         self.comboBox_VentanaTiempoSPI.setItemText(1, _translate("AjusteVisualizacionGraficaSPI", "15 minutos"))
