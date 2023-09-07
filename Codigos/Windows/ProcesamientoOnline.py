@@ -14,11 +14,7 @@ from scipy.stats import entropy
 
 def funcLevantarSenal(path_ppg):
   df_ppg = pd.read_csv(path_ppg)
-  t_ppg = df_ppg['Tiempo']
-  senal_ppg_R = -df_ppg['redVal']
-  senal_ppg_IR = -df_ppg['irVal']
-  # PPG(t) = Absorción de luz roja(t) - Absorción de luz infrarroja(t)
-  senal_ppg = senal_ppg_R-senal_ppg_IR
+  senal_ppg = df_ppg['PPG']
   return senal_ppg
 
 def funcEntropiaVentana(ventana_senal):
@@ -62,8 +58,8 @@ def funcEliminarPicosSubida(senal_ppg, locs_peaks_ppg):
   locs_peaks_ppg_correctos = []
   locs_peaks_ppg_correctos.append(locs_peaks_ppg[0])
   for loc in range(1, len(locs_peaks_ppg)):
-    if (locs_peaks_ppg[loc]+30) < len(senal_ppg):
-        if senal_ppg[locs_peaks_ppg[loc]+30] < senal_ppg[locs_peaks_ppg[loc]]:
+    if (locs_peaks_ppg[loc]+10) < len(senal_ppg):
+        if senal_ppg[locs_peaks_ppg[loc]+10] < senal_ppg[locs_peaks_ppg[loc]]:
             locs_peaks_ppg_correctos.append(locs_peaks_ppg[loc])
     else:
         locs_peaks_ppg_correctos.append(locs_peaks_ppg[loc])
@@ -82,7 +78,7 @@ def funcEliminarDiastolicos(senal_ppg, locs_peaks_ppg):
   locs_peaks_ppg_sistolicos = []
   locs_peaks_ppg_sistolicos.append(locs_peaks_ppg[0])
   for loc in range(1, len(locs_peaks_ppg)):
-    if senal_ppg[locs_peaks_ppg[loc]-30] < senal_ppg[locs_peaks_ppg[loc]]:
+    if senal_ppg[locs_peaks_ppg[loc]-10] < senal_ppg[locs_peaks_ppg[loc]]:
       locs_peaks_ppg_sistolicos.append(locs_peaks_ppg[loc])
   return np.array(locs_peaks_ppg_sistolicos)
 

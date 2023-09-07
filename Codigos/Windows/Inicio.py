@@ -40,13 +40,6 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
 
-        self.frame = QtWidgets.QFrame(self.groupBox_Inicio)
-        self.frame.setGeometry(QtCore.QRect(10, 30, 541, 301))
-        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
-        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame.setObjectName("frame")
-
         self.frame2 = QtWidgets.QFrame(self.centralwidget)
         self.frame2.setGeometry(QtCore.QRect(389, 169, 592, 362))
         self.frame2.setStyleSheet("background-color: rgb(226, 226, 226);")
@@ -60,6 +53,13 @@ class Ui_MainWindow(object):
         self.groupBox_Inicio.setStyleSheet("background-color: rgb(255, 255, 255);\n" "font: 14pt \"MS Shell Dlg 2\";")
         self.groupBox_Inicio.setObjectName("groupBox_Inicio")
         
+        self.frame = QtWidgets.QFrame(self.groupBox_Inicio)
+        self.frame.setGeometry(QtCore.QRect(10, 30, 541, 301))
+        self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame.setObjectName("frame")
+
         # Botón para iniciar un nuevo monitoreo y abrir la ventana de ingreso de datos del paciente
         self.pushButton_IniciarNuevoMonitoreo = QtWidgets.QPushButton(self.frame)
         self.pushButton_IniciarNuevoMonitoreo.setGeometry(QtCore.QRect(45, 120, 121, 61))

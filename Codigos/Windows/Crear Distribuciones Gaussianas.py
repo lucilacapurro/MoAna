@@ -43,6 +43,25 @@ media_poblacional_PPGA = np.mean(lista_poblacional_PPGA)
 desvio_poblacional_PPGA = np.std(lista_poblacional_PPGA)
 y_PPGA = funcDistribGaussiana(x_PPGA, media_poblacional_PPGA, desvio_poblacional_PPGA)
 
+
+# Crea las gráficas
+# HBI
+plt.plot(x_HBI, y_HBI, label='Distribución Normal')
+plt.xlabel('x')
+plt.ylabel('Probabilidad')
+plt.title('Distribución Normal HBI')
+plt.legend()
+plt.grid(True)
+plt.show()
+# PPAG 
+plt.plot(x_PPGA, y_PPGA, label='Distribución Normal')
+plt.xlabel('x')
+plt.ylabel('Probabilidad')
+plt.title('Distribución Normal PPGA')
+plt.legend()
+plt.grid(True)
+plt.show()
+
 # Guarda las distribuciones en los excels:
 nombre_excel_distribuciones = 'Curva Normalizacion Gaussiana.xlsx'
 path_excel_distribuciones = os.path.join(directorio_actual, nombre_excel_distribuciones)
@@ -55,26 +74,3 @@ y_HBI += [None] * (max_length - len(y_HBI))
 y_PPGA += [None] * (max_length - len(y_PPGA))
 df_distribuciones = pd.DataFrame({'HBI': y_HBI, 'PPGA': y_PPGA})
 df_distribuciones.to_excel(path_excel_distribuciones, index=False, header=True)
-
-
-#########################################################################################################################
-# GRÁFICOS: 
-
-# Crea las gráficas
-# HBI
-plt.plot(x_HBI, y_HBI, label='Distribución Normal')
-plt.xlabel('x')
-plt.ylabel('Probabilidad')
-plt.title('Distribución Normal con Media 0 y Desviación Estándar 1')
-plt.legend()
-plt.grid(True)
-plt.show()
-# PPAG 
-plt.plot(x_PPGA, y_PPGA, label='Distribución Normal')
-plt.xlabel('x')
-plt.ylabel('Probabilidad')
-plt.title('Distribución Normal con Media 0 y Desviación Estándar 1')
-plt.legend()
-plt.grid(True)
-plt.show()
-
