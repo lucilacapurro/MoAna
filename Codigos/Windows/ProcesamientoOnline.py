@@ -21,9 +21,18 @@ def funcEntropiaVentana(ventana_senal):
   value, counts = np.unique(ventana_senal, return_counts = True)
   return entropy(counts)
 
-def funcDetectarDesconexion(ventana_senal, umbral):
+def funcDetectarEntropia(ventana_senal, umbral):
   entropia_ventana = funcEntropiaVentana(ventana_senal)
   if entropia_ventana < umbral:
+    return True
+  else:
+    return False
+  
+def funcDetectarDesconexion(ventana_senal, umbral = 80):
+  largo_ventana = len(ventana_senal)
+  cant_muestras_ruido = sum(1 for muestra in ventana_senal if abs(muestra) == 2096921 or abs(muestra) > 16000000)
+  porcentaje_ruido = (cant_muestras_ruido / largo_ventana) * 100
+  if porcentaje_ruido > umbral:
     return True
   else:
     return False

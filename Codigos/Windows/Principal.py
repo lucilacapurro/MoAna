@@ -25,7 +25,7 @@ import csv
 import time
 import serial
 
-from ProcesamientoOnline import funcEntropiaVentana, funcDetectarDesconexion, funcDetectarPicos, funcEliminarPicosSubida, funcEliminarPicosOutliers, funcEliminarDiastolicos, funcDetectarOnsets, funcHBI, funcPPGA, funcSPIi, funcPromedio, funcNormalizarParametro, TF_HBI, TF_PPGA
+from ProcesamientoOnline import funcEntropiaVentana, funcDetectarEntropia, funcDetectarDesconexion, funcDetectarPicos, funcEliminarPicosSubida, funcEliminarPicosOutliers, funcEliminarDiastolicos, funcDetectarOnsets, funcHBI, funcPPGA, funcSPIi, funcPromedio, funcNormalizarParametro, TF_HBI, TF_PPGA
 
 global fs 
 fs = 50
@@ -805,8 +805,6 @@ class Ui_DisplayPrincipal(object):
         if self.serial_port is not None:
             new_data = -self.read_register(self.serial_port, address=[0x32, 0x43]) # Red val
 
-            #print(f"Received data: {new_data}")
-
             global muestra
             muestra += 1
 
@@ -814,7 +812,7 @@ class Ui_DisplayPrincipal(object):
             if muestra == 3:
                ppg = new_data
 
-            elif muestra > 3 and abs(new_data - ppg) < 100000: 
+            elif muestra > 3 and (abs(new_data - ppg) < 1000000 or abs(new_data) == 2096921 or abs(new_data) > 16000000): 
                 ppg = new_data
 
                 self.funcSetUpAlarmas()
@@ -831,8 +829,7 @@ class Ui_DisplayPrincipal(object):
                     
                 if muestra > largo:
 
-                    #desconexion = funcDetectarDesconexion(ventana_ppg, umbral = 5)
-                    desconexion = False
+                    desconexion = funcDetectarDesconexion(ventana_ppg)
 
                     ventana_filtrada_LP = signal.filtfilt(b_LP, a_LP, ventana_ppg)
                     ventana_filtrada_HP = signal.filtfilt(b_HP, a_HP, ventana_filtrada_LP)
@@ -891,7 +888,7 @@ class Ui_DisplayPrincipal(object):
                                 global contador_error_sensor
                                 contador_error_sensor += 1
 
-                                if contador_error_sensor == 5:
+                                if contador_error_sensor == 3:
                                     pop_up = QMessageBox()
                                     pop_up.setIcon(QMessageBox.Warning)
                                     pop_up.setWindowTitle("Alerta")
@@ -1029,7 +1026,7 @@ class Ui_DisplayPrincipal(object):
 
                         evento = "-"
 
-                        if muestra == muestra_evento + largo*2:  # mostramos el evento por un período de 2 SPI
+                        if muestra == muestra_evento + largo:  # mostramos el evento por un período de 1 SPI
                             self.comboBox_Farmaco.setCurrentIndex(0)
                             self.comboBox_ProcQuirurgico.setCurrentIndex(0)
                             self.comboBox_Intercurrencias.setCurrentIndex(0)  
@@ -1052,17 +1049,24 @@ class Ui_DisplayPrincipal(object):
         lista_poblacional_HBI = excel_normalizacion['HBI']
         lista_poblacional_PPGA = excel_normalizacion['PPGA']
 
+        nombre_excel_desvios = 'Desvios.xlsx'
+        path_desvios = os.path.join(directorio_actual, nombre_excel_desvios)
+        excel_desvios = pd.read_excel(path_desvios)
+
+        lista_desvios_HBI = excel_desvios['HBI']
+        lista_desvios_PPGA = excel_desvios['PPGA']
+
         min_poblacional_HBI = np.min(lista_poblacional_HBI)
         max_poblacional_HBI = np.max(lista_poblacional_HBI)
         x_HBI = np.linspace(min_poblacional_HBI, max_poblacional_HBI, max_poblacional_HBI-min_poblacional_HBI+1)
         media_poblacional_HBI = np.mean(lista_poblacional_HBI)
-        desvio_poblacional_HBI = np.std(lista_poblacional_HBI)
+        desvio_poblacional_HBI = np.mean(lista_desvios_HBI) # se hace el promedio de los desvios individuales
 
         min_poblacional_PPGA = np.min(lista_poblacional_PPGA)
         max_poblacional_PPGA = np.max(lista_poblacional_PPGA)
         x_PPGA = np.linspace(min_poblacional_PPGA, max_poblacional_PPGA, max_poblacional_PPGA-min_poblacional_PPGA+1)
         media_poblacional_PPGA = np.mean(lista_poblacional_PPGA)
-        desvio_poblacional_PPGA = np.std(lista_poblacional_PPGA)
+        desvio_poblacional_PPGA = np.mean(lista_desvios_PPGA) # se hace el promedio de los desvios individuales
 
         global lista_individual_HBI, lista_individual_PPGA
         media_individual_HBI = np.mean(np.array(lista_individual_HBI))
@@ -1307,7 +1311,9 @@ class Ui_DisplayPrincipal(object):
         #Ejecuto PDF.py
         nombre_archivo_ejecutar_PDF = 'PDF.py'
         path_archivo_ejecutar_PDF = os.path.join(directorio_actual, nombre_archivo_ejecutar_PDF)
-        exec(open(path_archivo_ejecutar_PDF).read())
+        with open(path_archivo_ejecutar_PDF, 'r', encoding='utf-8') as file:
+            file_contents = file.read()
+        exec(file_contents)
 
 
     def funcStopTimer(self):

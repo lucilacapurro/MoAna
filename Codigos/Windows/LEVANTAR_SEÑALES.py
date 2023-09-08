@@ -37,7 +37,7 @@ def read_register(ser, address):
 
 #####################################################################################################################
 
-path_archivo_datos = 'DATA_YASSEF1.csv'
+path_archivo_datos = 'DATA_RUIDO1.csv'
 
 fieldnames = ["Muestra", "Tiempo", "PPG"]
 
