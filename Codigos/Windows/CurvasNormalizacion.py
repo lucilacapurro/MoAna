@@ -14,8 +14,6 @@ from numpy.core.function_base import linspace
 
 def funcLevantarSenal(path_ppg):
   df_ppg = pd.read_csv(path_ppg)
-  t_ppg = df_ppg['Tiempo']
-  m_ppg = df_ppg['Muestra']
   senal_ppg = df_ppg['PPG']
   return senal_ppg
 
