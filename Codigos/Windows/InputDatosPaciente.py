@@ -76,13 +76,13 @@ class Ui_InputDatosPaciente(object):
 
     def setupUi(self, InputDatosPaciente):
         InputDatosPaciente.setObjectName("InputDatosPaciente")
-        InputDatosPaciente.resize(1360, 700)
+        InputDatosPaciente.resize(1360, 800)
  
         self.centralwidget = QtWidgets.QWidget(InputDatosPaciente)
         self.centralwidget.setObjectName("centralwidget")
 
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(304, 134, 752, 432))
+        self.frame.setGeometry(QtCore.QRect(0, 0, 1360, 800))
         self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -90,9 +90,9 @@ class Ui_InputDatosPaciente(object):
 
         # Botón para volver a la ventana de inicio
         self.pushButton_VolverInputDatosPaciente = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_VolverInputDatosPaciente.setGeometry(QtCore.QRect(935, 513, 111, 41))
+        self.pushButton_VolverInputDatosPaciente.setGeometry(QtCore.QRect(1200, 620, 140, 50))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(11)
         font.setBold(False)
         font.setWeight(50)
         self.pushButton_VolverInputDatosPaciente.setFont(font)
@@ -102,7 +102,7 @@ class Ui_InputDatosPaciente(object):
         self.pushButton_VolverInputDatosPaciente.clicked.connect(self.openInicio)
 
         self.groupBox_InputDatosPaciente = QtWidgets.QGroupBox(self.frame)
-        self.groupBox_InputDatosPaciente.setGeometry(QtCore.QRect(70, 50, 611, 301))
+        self.groupBox_InputDatosPaciente.setGeometry(QtCore.QRect(20, 20, 1320, 580))
         font = QtGui.QFont()
         font.setPointSize(14)
         self.groupBox_InputDatosPaciente.setFont(font)
@@ -112,9 +112,9 @@ class Ui_InputDatosPaciente(object):
 
         # Botón para guardar los datos una vez ingresados todos los campos (obligatorios)
         self.pushButton_GuardarInputDatosPaciente = QtWidgets.QPushButton(self.groupBox_InputDatosPaciente)
-        self.pushButton_GuardarInputDatosPaciente.setGeometry(QtCore.QRect(380, 250, 81, 31))
+        self.pushButton_GuardarInputDatosPaciente.setGeometry(QtCore.QRect(700, 450, 140, 35))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(11)
         font.setBold(False)
         font.setWeight(50)
         self.pushButton_GuardarInputDatosPaciente.setFont(font)
@@ -124,9 +124,9 @@ class Ui_InputDatosPaciente(object):
 
         # Botón para iniciar el monitoreo una vez guardados los datos
         self.pushButton_IniciarInputDatosPaciente = QtWidgets.QPushButton(self.groupBox_InputDatosPaciente)
-        self.pushButton_IniciarInputDatosPaciente.setGeometry(QtCore.QRect(470, 250, 120, 31))
+        self.pushButton_IniciarInputDatosPaciente.setGeometry(QtCore.QRect(860, 450, 140, 35))
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(11)
         font.setBold(False)
         font.setWeight(50)
         self.pushButton_IniciarInputDatosPaciente.setFont(font)
@@ -141,54 +141,64 @@ class Ui_InputDatosPaciente(object):
 
         #Nombre
         self.label_Nombre = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
-        self.label_Nombre.setGeometry(QtCore.QRect(21, 90, 71, 31))
+        self.label_Nombre.setGeometry(QtCore.QRect(300, 160, 71, 50))
         font = QtGui.QFont()
-        font.setPointSize(11)
+        font.setPointSize(13)
         self.label_Nombre.setFont(font)
         self.label_Nombre.setObjectName("label_Nombre")
 
         self.lineEdit_Nombre = QtWidgets.QLineEdit(self.groupBox_InputDatosPaciente)
-        self.lineEdit_Nombre.setGeometry(QtCore.QRect(91, 90, 492, 31))
+        self.lineEdit_Nombre.setGeometry(QtCore.QRect(400, 160, 600, 40))
         self.lineEdit_Nombre.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.lineEdit_Nombre.setText("")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.lineEdit_Nombre.setFont(font)
         self.lineEdit_Nombre.setFrame(False)
         self.lineEdit_Nombre.setObjectName("lineEdit_Nombre")
 
         # Apellido
         self.label_Apellido = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
-        self.label_Apellido.setGeometry(QtCore.QRect(21, 140, 61, 31))
+        self.label_Apellido.setGeometry(QtCore.QRect(300, 250, 90, 40))
         font = QtGui.QFont()
-        font.setPointSize(11)
+        font.setPointSize(13)
         self.label_Apellido.setFont(font)
         self.label_Apellido.setObjectName("label_Apellido")
 
         self.lineEdit_Apellido = QtWidgets.QLineEdit(self.groupBox_InputDatosPaciente)
-        self.lineEdit_Apellido.setGeometry(QtCore.QRect(91, 140, 492, 31))
+        self.lineEdit_Apellido.setGeometry(QtCore.QRect(400, 250, 600, 40))
         self.lineEdit_Apellido.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.lineEdit_Apellido.setText("")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.lineEdit_Apellido.setFont(font)
         self.lineEdit_Apellido.setFrame(False)
         self.lineEdit_Apellido.setObjectName("lineEdit_Apellido")
 
         # ID
         self.label_ID = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
-        self.label_ID.setGeometry(QtCore.QRect(20, 190, 30, 31))
+        self.label_ID.setGeometry(QtCore.QRect(300, 340, 30, 40))
         font = QtGui.QFont()
-        font.setPointSize(11)
+        font.setPointSize(13)
         self.label_ID.setFont(font)
         self.label_ID.setObjectName("label_ID")
 
         self.lineEdit_ID = QtWidgets.QLineEdit(self.groupBox_InputDatosPaciente)
-        self.lineEdit_ID.setGeometry(QtCore.QRect(60, 190, 523, 31))
+        self.lineEdit_ID.setGeometry(QtCore.QRect(400, 340, 600, 40))
         self.lineEdit_ID.setStyleSheet("background-color: rgb(226, 226, 226);")
+        self.lineEdit_ID.setText("")
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.lineEdit_ID.setFont(font)
         self.lineEdit_ID.setFrame(False)
         self.lineEdit_ID.setObjectName("lineEdit_ID")
   
 
         # Señal de aviso que los tres campos (nombre, apellido y ID) son obligatorios para poder guardar e iniciar el monitoreo
         self.label_Obligatorio = QtWidgets.QLabel(self.groupBox_InputDatosPaciente)
-        self.label_Obligatorio.setGeometry(QtCore.QRect(483, 12, 110, 25))
+        self.label_Obligatorio.setGeometry(QtCore.QRect(1180, 12, 120, 25))
         font = QtGui.QFont()
-        font.setPointSize(8)
+        font.setPointSize(9)
         self.label_Obligatorio.setFont(font)
         self.label_Obligatorio.setObjectName("label_Obligatorio")
 
@@ -342,5 +352,5 @@ if __name__ == "__main__":
     InputDatosPaciente = QtWidgets.QMainWindow()
     ui = Ui_InputDatosPaciente()
     ui.setupUi(InputDatosPaciente)
-    InputDatosPaciente.show()
+    InputDatosPaciente.showMaximized()
     sys.exit(app.exec_())

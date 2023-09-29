@@ -37,7 +37,7 @@ def read_register(ser, address):
 
 #####################################################################################################################
 
-path_archivo_datos = 'DATA_RUIDO1.csv'
+path_archivo_datos = 'DATA.csv'
 
 fieldnames = ["Muestra", "Tiempo", "PPG"]
 
@@ -51,7 +51,7 @@ muestra = 0
 global ppg 
 ppg = 0 
 
-fs = 50
+fs = 500
 
 
 class SerialPortExample(QMainWindow):

@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QSpinBox
+from PyQt5.QtGui import QPixmap
 
 global alarmas
 alarmas = [50, 20, 15] #seteamos los valores default de las alarmas
@@ -19,41 +20,55 @@ class Ui_SetUpAlarmas(object):
         self.groupBox_SetUpAlarmas.setFont(font)
         self.groupBox_SetUpAlarmas.setAutoFillBackground(False)
         self.groupBox_SetUpAlarmas.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.groupBox_SetUpAlarmas.setObjectName("groupBox_SetUpAlarmas")
+        self.groupBox_SetUpAlarmas.setObjectName("groupBox_SetUpAlarmas") 
         
+        self.label_LimiteMaximo = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
+        self.label_LimiteMaximo.setGeometry(QtCore.QRect(11, 40, 31, 31))
+        self.label_LimiteMaximo.setObjectName("label_AlarmaTecnicaReconocida")
+        self.imagen_LimiteMaximo = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\LimiteMaximo.png")
+        self.imagen_LimiteMaximo = self.imagen_LimiteMaximo.scaled(self.label_LimiteMaximo.size(), QtCore.Qt.KeepAspectRatio)
+        self.label_LimiteMaximo.setPixmap(self.imagen_LimiteMaximo)
+
         self.label_MaxSPI = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
-        self.label_MaxSPI.setGeometry(QtCore.QRect(11, 40, 95, 31))
+        self.label_MaxSPI.setGeometry(QtCore.QRect(51, 40, 95, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_MaxSPI.setFont(font)
         self.label_MaxSPI.setObjectName("label_MaxSPI")
         
         self.spinBox_MaxSPI = QSpinBox(self.groupBox_SetUpAlarmas)
-        self.spinBox_MaxSPI.setGeometry(QtCore.QRect(114, 40, 486, 31))
+        self.spinBox_MaxSPI.setGeometry(QtCore.QRect(154, 40, 446, 31))
         self.spinBox_MaxSPI.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.spinBox_MaxSPI.setObjectName("spinBox_MaxSPI")
         self.spinBox_MaxSPI.setMinimum(0)
         self.spinBox_MaxSPI.setMaximum(100)
-        self.spinBox_MaxSPI.setValue(50)
+        self.spinBox_MaxSPI.setValue(alarmas[0])
         self.spinBox_MaxSPI.setSingleStep(5)
         font = self.spinBox_MaxSPI.font()
         font.setPointSize(11)
         self.spinBox_MaxSPI.setFont(font)
     
+        self.label_LimiteMinimo = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
+        self.label_LimiteMinimo.setGeometry(QtCore.QRect(11, 90, 31, 31))
+        self.label_LimiteMinimo.setObjectName("label_AlarmaTecnicaReconocida")
+        self.imagen_LimiteMinimo = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\LimiteMinimo.png")
+        self.imagen_LimiteMinimo = self.imagen_LimiteMinimo.scaled(self.label_LimiteMinimo.size(), QtCore.Qt.KeepAspectRatio)
+        self.label_LimiteMinimo.setPixmap(self.imagen_LimiteMinimo)
+
         self.label_MinSPI = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
-        self.label_MinSPI.setGeometry(QtCore.QRect(11, 90, 90, 31))
+        self.label_MinSPI.setGeometry(QtCore.QRect(51, 90, 90, 31))
         font = QtGui.QFont()
         font.setPointSize(11)
         self.label_MinSPI.setFont(font)
         self.label_MinSPI.setObjectName("label_MinSPI")
         
         self.spinBox_MinSPI = QSpinBox(self.groupBox_SetUpAlarmas)
-        self.spinBox_MinSPI.setGeometry(QtCore.QRect(109, 88, 491, 31))
+        self.spinBox_MinSPI.setGeometry(QtCore.QRect(154, 88, 446, 31))
         self.spinBox_MinSPI.setStyleSheet("background-color: rgb(226, 226, 226);")
         self.spinBox_MinSPI.setObjectName("spinBox_MinSPI")
         self.spinBox_MinSPI.setMinimum(0)
         self.spinBox_MinSPI.setMaximum(100)
-        self.spinBox_MinSPI.setValue(20)
+        self.spinBox_MinSPI.setValue(alarmas[1])
         self.spinBox_MinSPI.setSingleStep(5)
         font = self.spinBox_MinSPI.font()
         font.setPointSize(11)
@@ -67,7 +82,7 @@ class Ui_SetUpAlarmas(object):
         self.label_TiempoPermanencia.setObjectName("label_TiempoPermanencia")
         
         self.comboBox_TiempoPermanencia = QtWidgets.QComboBox(self.groupBox_SetUpAlarmas)
-        self.comboBox_TiempoPermanencia.setGeometry(QtCore.QRect(193, 140, 410, 31))
+        self.comboBox_TiempoPermanencia.setGeometry(QtCore.QRect(193, 140, 407, 31))
         font = QtGui.QFont()
         font.setFamily("MS Shell Dlg 2")
         font.setPointSize(11)
