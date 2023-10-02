@@ -74,6 +74,7 @@ spi = df['spi']
 spi_promedio = df["spi_promedio"]
 estados = df['estado']
 eventos = df['evento']
+#alarmas = df['alarma']
 
 ##############################################################################################
 # GRAFICO INTERACTIVO EVOLUCION SPI - POR ESTADOS:

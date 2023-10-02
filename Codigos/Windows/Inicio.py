@@ -38,15 +38,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(1360, 700)
 
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-
-        #self.frame2 = QtWidgets.QFrame(self.centralwidget)
-        #self.frame2.setGeometry(QtCore.QRect(389, 169, 592, 362))
-        #self.frame2.setStyleSheet("background-color: rgb(226, 226, 226);")
-        #self.frame2.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        #self.frame2.setFrameShadow(QtWidgets.QFrame.Raised)
-        #self.frame2.setObjectName("frame2")
-        #self.frame2.raise_()
+        self.centralwidget.setObjectName("centralwidget")  
           
         self.groupBox_Inicio = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_Inicio.setGeometry(QtCore.QRect(0, 0, 1360, 700))
@@ -76,7 +68,7 @@ class Ui_MainWindow(object):
         self.pushButton_HistorialDePacientes.clicked.connect(self.openBusquedaPaciente)
         self.pushButton_HistorialDePacientes.clicked.connect(lambda: MainWindow.close())
 
-        # Botón para abrir la ventana de personalización de eventos
+        # Botón para abrir la ventana de personalización de eventos 
         self.pushButton_Configuraciones = QtWidgets.QPushButton(self.frame)
         self.pushButton_Configuraciones.setGeometry(QtCore.QRect(870, 280, 200, 80))
         self.pushButton_Configuraciones.setStyleSheet("font: 14pt \"MS Shell Dlg 2\";\n" "background-color: rgb(132, 132, 132);\n" "color: rgb(255, 255, 255);")

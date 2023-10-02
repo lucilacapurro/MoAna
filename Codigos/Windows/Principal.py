@@ -16,7 +16,7 @@ import pandas as pd
 import plotly
 import plotly.express as px
 import os
-import winsound
+import pygame #winsound
 from openpyxl import load_workbook
 import copy
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -46,11 +46,20 @@ lista_estado = ["-"]
 global lista_evento
 lista_evento = ["-"]    # es la lista completa para cada SPI que incluye los "-"
 
+global lista_alarma
+lista_alarma = ["-"]
+
 global estado
 estado = "-"
 
 global evento
 evento = "-"
+
+global alarma
+alarma = "-"
+
+global alarmas_seteadas
+alarmas_seteadas = "-"
 
 global cant_spi_a_prom
 cant_spi_a_prom = 4
@@ -94,8 +103,8 @@ restablecido = False
 global contador_error_sensor
 contador_error_sensor = 0
 
-global mensaje_desconexion
-mensaje_desconexion = True
+global ejecutar_alarma_auditiva
+ejecutar_alarma_auditiva = True
 
 listaInicioEstados = []
 listaEventos = [] # contiene la lista de los eventos ingresados
@@ -192,8 +201,6 @@ class SerialCommunication(QThread):
 
 ########################################################################################################################################################
 
-
-
 class Ui_DisplayPrincipal(object):
 
     #############################################################################################
@@ -225,11 +232,10 @@ class Ui_DisplayPrincipal(object):
         self.ui.setupUi(self.windowOpcionesInforme)
         self.windowOpcionesInforme.show()
 
-#############################################################################################
+    #############################################################################################
 
     def setupUi(self, DisplayPrincipal):
         DisplayPrincipal.setObjectName("DisplayPrincipal")
-        #DisplayPrincipal.resize(978, 544)
         DisplayPrincipal.resize(1360, 740)
         
         self.centralwidget = QtWidgets.QWidget(DisplayPrincipal)
@@ -581,23 +587,6 @@ class Ui_DisplayPrincipal(object):
         self.imagen_ConfigurarAlarmas = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\ConfigurarAlarmas.png")
         self.imagen_ConfigurarAlarmas = self.imagen_ConfigurarAlarmas.scaled(self.label_ConfigurarAlarmas.size(), QtCore.Qt.KeepAspectRatio)
         self.label_ConfigurarAlarmas.setPixmap(self.imagen_ConfigurarAlarmas)
-        
-        #self.pushButton_ResetAlarmas = QtWidgets.QPushButton(self.groupBox_Alarmas)
-        #self.pushButton_ResetAlarmas.setGeometry(QtCore.QRect(110, 180, 140, 40))
-        #font = QtGui.QFont()
-        #font.setPointSize(11)
-        #self.pushButton_ResetAlarmas.setFont(font)
-        #self.pushButton_ResetAlarmas.setStyleSheet("background-color: rgb(255, 255, 255);")
-        #self.pushButton_ResetAlarmas.setObjectName("pushButton_ResetAlarmas")
-        #self.pushButton_ResetAlarmas.clicked.connect(self.funcResetAlarmas)
-        #self.pushButton_ResetAlarmas.setEnabled(False)
-
-        #self.label_ResetAlarmas = QtWidgets.QLabel(self.groupBox_Alarmas)
-        #self.label_ResetAlarmas.setGeometry(QtCore.QRect(50, 180, 40, 40))
-        #self.label_ResetAlarmas.setObjectName("label_ResetAlarmas")
-        #self.imagen_ResetAlarmas = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\ResetAlarmas.png")
-        #self.imagen_ResetAlarmas = self.imagen_ResetAlarmas.scaled(self.label_ResetAlarmas.size(), QtCore.Qt.KeepAspectRatio)
-        #self.label_ResetAlarmas.setPixmap(self.imagen_ResetAlarmas)
 
         self.groupBox_TodoSPI = QtWidgets.QGroupBox(self.centralwidget)
         self.groupBox_TodoSPI.setGeometry(QtCore.QRect(20, 20, 1000, 280))
@@ -921,7 +910,6 @@ class Ui_DisplayPrincipal(object):
         self.plt_SPI.plot(self.senal_spi_x, self.linea_20, pen=pg.mkPen('#FFFF00',width=2, style=QtCore.Qt.DashLine)) # limite de SPI = 20
 
         self.groupBox_Todo = QtWidgets.QGroupBox(self.centralwidget)
-        #self.groupBox_Todo.setGeometry(QtCore.QRect(0, -10, 971, 541))
         self.groupBox_Todo.setGeometry(QtCore.QRect(20, 20, 1320, 650))
         self.groupBox_Todo.setStyleSheet("background-color: #000000;\n""border-color: rgb(0, 0, 0);")
         self.groupBox_Todo.setTitle("")
@@ -940,10 +928,8 @@ class Ui_DisplayPrincipal(object):
         self.statusbar.setObjectName("statusbar")
         DisplayPrincipal.setStatusBar(self.statusbar)
 
-        #control connect
-
+        # Control connect
         self.serial_communication = SerialCommunication(port="COM6", baudrate=230400)
-
         self.serial_communication.data_received.connect(self.read_data_periodically)
 
         # Esto es para el gráfico de PPG
@@ -965,7 +951,7 @@ class Ui_DisplayPrincipal(object):
         # Archivo csv
         from InputDatosPaciente import path_archivo_datos
         with open(path_archivo_datos, 'w') as csv_file:
-            fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento"]
+            fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento", "alarma"]
             csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             csv_writer.writeheader()
 
@@ -973,7 +959,6 @@ class Ui_DisplayPrincipal(object):
         QtCore.QMetaObject.connectSlotsByName(DisplayPrincipal)
 
 ###############################################################################################################################
-
 
 # FUNCTIONS:
 
@@ -1018,16 +1003,15 @@ class Ui_DisplayPrincipal(object):
         ventana_ppg = copy.deepcopy(aux)
             
         if muestra > largo:
-
             desconexion = funcDetectarDesconexion(ventana_ppg)
 
             ventana_filtrada_LP = signal.filtfilt(b_LP, a_LP, ventana_ppg)
             ventana_filtrada_HP = signal.filtfilt(b_HP, a_HP, ventana_filtrada_LP)
             
             if muestra%largo == 0:
-                global mensaje_desconexion
                 if desconexion == False:
-                    mensaje_desconexion = True
+                    global alarma
+
                     try:
                         locs_peaks_ppg = funcDetectarPicos(ventana_filtrada_HP)
                         locs_peaks_ppg_no_subida = funcEliminarPicosSubida(ventana_filtrada_HP, locs_peaks_ppg)
@@ -1066,16 +1050,27 @@ class Ui_DisplayPrincipal(object):
                         self.textEdit_SPI.setStyleSheet("color: black;")
                         self.funcColorSPI()
 
+                        # Como pude calcular el SPI, sé que no hubo un error
+                        global ejecutar_alarma_auditiva
+                        ejecutar_alarma_auditiva = True # La próxima vez que haya una alarma auditiva quiero que suene
+
                         # Desactivo alarmas por las dudas en caso de que se hayan activado antes, porque ya no hay condición de alarma 
                         self.radioButton_AlarmaTecnicaReconocida.setChecked(False)
                         self.frame_AlarmasTecnicas.hide()
                         self.frame_PPG.setStyleSheet("background-color: rgb(0, 0, 0); border: 1px solid #F0F0F0;") # Le saco el borde de color al group box
                         self.centralwidget.setStyleSheet("background-color: #000000;")
 
+                        # Si el borde del PPG estaba parpadeando, freno el timer
                         try: 
-                            self.timer_border_color_PPG.stop() # Freno el timer para que deje de parpadear
+                            self.timer_border_color_PPG.stop() 
                         except:
                             pass
+
+                        global alarma
+                        if alarma == "Desconexión" or alarma == "Movimiento":
+                            # Actualizo la variable global 'alarma' porque ya no hay condición de alarma técnica. No afecta si hay una fisiológica porque no entra al if
+                            alarma_actual = "-"
+                            alarma = alarma_actual
 
                     except:
                         # Se movió el sensor y no se puede hacer el cálculo del SPI 
@@ -1091,7 +1086,9 @@ class Ui_DisplayPrincipal(object):
                         self.frame_AlarmasFisiologicas.hide()
                         self.timer_border_color_SPI.stop()
                         self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group box
-                        self.centralwidget.setStyleSheet("background-color: #000000;")
+                        # Actualizo la variable global 'alarma' porque ya no hay condición de alarma
+                        alarma_actual = "-"
+                        alarma = alarma_actual
 
                         global contador_error_sensor
                         contador_error_sensor += 1
@@ -1117,14 +1114,10 @@ class Ui_DisplayPrincipal(object):
                     self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group boxç
                     self.centralwidget.setStyleSheet("background-color: #000000;")
 
+                    # Ejecuto la alarma técnica
+                    self.funcEjecutarAlarmaTecnica(caso = "Desconexión")
 
-                    if mensaje_desconexion == True:
-
-                        # Ejecuto la alarma técnica
-                        self.funcEjecutarAlarmaTecnica(caso = "Desconexión")
-
-                        mensaje_desconexion = False
-           
+        
                 self.senal_spi=self.senal_spi[1:]
                 self.senal_spi.append(SPI)
 
@@ -1212,12 +1205,14 @@ class Ui_DisplayPrincipal(object):
                 tipo_evento = "-"
                 nombre_evento = "-"
             
+            lista_alarma.append(alarma)
+            
             if muestra%largo != 0:
                 spi_promedio = "-"
             
             from InputDatosPaciente import path_archivo_datos
             with open(path_archivo_datos, 'a') as csv_file:
-                fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento"]
+                fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento", "alarma"]
                 csv_writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
 
                 info = {
@@ -1230,6 +1225,7 @@ class Ui_DisplayPrincipal(object):
                     "estado": estado,
                     "tipo evento": tipo_evento,
                     "evento": nombre_evento,
+                    "alarma": alarma
                 }
                 csv_writer.writerow(info)
 
@@ -1577,10 +1573,10 @@ class Ui_DisplayPrincipal(object):
             if SPIValue > SPIMax or SPIValue < SPIMin:
                 tiempo_condicion += (largo / fs) # En un contador sería += 1 pero cada spi corresponde a largo / fs segundos (3 segundos)
                 
-                if (tiempo_condicion >= TiempoPermanencia): # and self.radioButton_On.isChecked():
+                if (tiempo_condicion >= TiempoPermanencia):
                     if SPIValue > SPIMax:
                         self.funcEjecutarAlarmaFisiologica(caso = "Maximo")
-                    else:   # Es el caso de que SPIValue < SPIMin
+                    elif SPIValue < SPIMin:
                         self.funcEjecutarAlarmaFisiologica(caso = "Minimo")
                     tiempo_condicion = 0
 
@@ -1590,7 +1586,10 @@ class Ui_DisplayPrincipal(object):
                 self.frame_AlarmasFisiologicas.hide()
                 self.timer_border_color_SPI.stop() # Freno el timer para que deje de parpadear
                 self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group box
-
+                global alarma
+                if alarma == "Maximo" or alarma == "Minimo":
+                    alarma_actual = "-"
+                    alarma = alarma_actual # Actualizo la alarma porque ya no hay condición de alarma
 
 
     def funcSetUpAlarmas(self):
@@ -1609,7 +1608,24 @@ class Ui_DisplayPrincipal(object):
             self.textEdit_Alarma_Max.setStyleSheet("background-color: rgb(0, 0, 0); color: white; border: 1px solid #808080;")
             self.textEdit_Alarma_Min.setStyleSheet("background-color: rgb(0, 0, 0); color: white; border: 1px solid #808080;")
             self.textEdit_Alarma_Tiempo.setStyleSheet("background-color: rgb(0, 0, 0); color: white; border: 1px solid #808080;")
-    
+
+            global alarmas_seteadas
+            if alarmas != alarmas_seteadas:
+                # Tengo que reiniciar el frame y el parpadeo de las alarmas fisiológicas porque ahora no sé si se está cumpliendo la condición. Se reincia hasta que chequee
+                self.radioButton_AlarmaFisiologicaReconocida.setChecked(False)
+                self.frame_AlarmasFisiologicas.hide()
+                self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group box
+                try:
+                    self.timer_border_color_SPI.stop()
+                except:
+                    pass        
+                # Actualizo la variable global 'alarma' porque ya no hay condición de alarma
+                global alarma
+                alarma_actual = "-"
+                alarma = alarma_actual
+                # Actualizo alarmas_seteadas
+                alarmas_seteadas = alarmas
+
     def funcEjecutarAlarmaFisiologica(self, caso):
         self.frame_AlarmasFisiologicas.show()
 
@@ -1620,9 +1636,12 @@ class Ui_DisplayPrincipal(object):
             self.label_MensajeAlarmaFisiologicaMinimo.show()
             self.label_MensajeAlarmaFisiologicaMaximo.hide()
 
-        # Cambio color del borde del group box del SPI
-        #self.groupBox_ReferenciaSPI.setStyleSheet("#groupBox_ReferenciaSPI { border: 4px solid #FFA500; }")
-        
+        # Actualizo la variable global 'alarma' porque tengo una condición de alarma fisiológica
+        alarma_actual = caso
+        global alarma
+        alarma = alarma_actual
+
+        # Si no está marcada como reconocida, la ejecuto
         if not self.radioButton_AlarmaFisiologicaReconocida.isChecked():
             # Inicializar variables para el parpadeo
             self.border_colors_SPI = [QColor(255, 165, 0), QColor(255, 255, 255)]  # Naranja y blanco
@@ -1634,13 +1653,12 @@ class Ui_DisplayPrincipal(object):
             self.timer_border_color_SPI.start(500)  # Cambiar cada 0.5 segundos
 
             # Alarma auditiva
-            self.funcAlarmaAuditiva()
+            #self.funcAlarmaAuditiva(caso)
 
     def funcCambiarColorFrameSPI(self):
         self.border_color_index_SPI = (self.border_color_index_SPI + 1) % len(self.border_colors_SPI)
         color = self.border_colors_SPI[self.border_color_index_SPI]
         self.groupBox_ReferenciaSPI.setStyleSheet(f"#groupBox_ReferenciaSPI {{ border: 6px solid {color.name()}; }}")
-        self.centralwidget.setStyleSheet(f"background-color: {color.name()};")
 
     def funcAlarmaFisiologicaReconocida(self):
         if self.radioButton_AlarmaFisiologicaReconocida.isChecked():
@@ -1660,6 +1678,12 @@ class Ui_DisplayPrincipal(object):
             self.label_MensajeAlarmaTecnicaDesconexion.show()
             self.label_MensajeAlarmaTecnicaMovimiento.hide()
 
+        # Actualizo la variable global 'alarma' porque tengo una condición de alarma técnica
+        alarma_actual = caso
+        global alarma
+        alarma = alarma_actual
+
+        # Si no está marcada como reconocida, la ejecuto
         if not self.radioButton_AlarmaTecnicaReconocida.isChecked():
             # Inicializar variables para el parpadeo
             self.border_colors_PPG = [QColor(255, 165, 0), QColor(255, 255, 255)]  # Naranja y rojo
@@ -1670,21 +1694,34 @@ class Ui_DisplayPrincipal(object):
             self.timer_border_color_PPG.timeout.connect(self.funcCambiarColorFramePPG)
             self.timer_border_color_PPG.start(500) # Le cambio el color cada 0.5 segundos
 
-            # Alarma auditiva
-            self.funcAlarmaAuditiva()
+            global ejecutar_alarma_auditiva
+            if ejecutar_alarma_auditiva == True:
+                self.funcAlarmaAuditiva(caso)
+                ejecutar_alarma_auditiva = False
 
-    def funcAlarmaAuditiva(self):
+
+    def funcAlarmaAuditiva(self, caso):
         directorio_actual = os.path.abspath(os.path.dirname(__file__))
-        nombre_alarma = 'alarm_beep.wav'
+        if caso == "Movimiento" or caso == "Desconexión": # En realidad si no vamos a hacer alarmas auditivas por SPI esto se puede ir
+            nombre_alarma = 'pulso_personalizado_tecnica.wav'
+        elif caso == "Maximo" or caso == "Minimo":
+            nombre_alarma = 'pulso_personalizado_fisiologica.wav'
         path = os.path.join(directorio_actual, nombre_alarma)
-        winsound.PlaySound(path, winsound.SND_FILENAME)
+        # Reproducir el archivo de audio con pygame
+        pygame.mixer.init()
+        pygame.mixer.music.load(path)
+        pygame.mixer.music.play()
+        # Esperar hasta que se termine de reproducir
+        pygame.time.wait(int(0.2 * 1000))  # Esperar según la duración del pulso en milisegundos --> duración de 0.2s para ambos
+        # Detener la reproducción
+        pygame.mixer.music.stop()
+    
 
     def funcCambiarColorFramePPG(self):
         self.border_color_index_PPG = (self.border_color_index_PPG + 1) % len(self.border_colors_PPG)
         color = self.border_colors_PPG[self.border_color_index_PPG]
         self.frame_PPG.setStyleSheet(f"#frame_PPG {{ border: 6px solid {color.name()}; }}")
         self.centralwidget.setStyleSheet(f"background-color: {color.name()};")
-
 
     def funcAlarmaTecnicaReconocida(self):
         if self.radioButton_AlarmaTecnicaReconocida.isChecked():
