@@ -124,7 +124,7 @@ def funcObtenerHR(senal_ppg, f1, f2, fs):
   plt.tight_layout()
   plt.show()
   '''
-  print(f"Frecuencia Cardíaca estimada: {heart_rate:.2f} bpm")
+  #print(f"Frecuencia Cardíaca estimada: {heart_rate:.2f} bpm")
   return heart_rate
 
 

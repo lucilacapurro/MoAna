@@ -1030,14 +1030,13 @@ class Ui_DisplayPrincipal(object):
         aux.append(ppg)
         ventana_ppg = copy.deepcopy(aux)
             
-        if muestra > largo:
+        if muestra >= largo:
             HR = funcObtenerHR(senal_ppg=ventana_ppg, f1=0.1, f2=5, fs=fs)
 
             ventana_filtrada = funcFiltrar(ventana_ppg, fs, HR, orden=3)
             
             if muestra%largo == 0:
                 desconexion_sensor = funcDetectarDesconexionSensor(ventana_ppg)
-
                 if desconexion_sensor == False:
                     desconexion_dedo = funcDetectarDesconexionDedo(ventana_ppg)    
                     if desconexion_dedo == False:
@@ -1106,7 +1105,10 @@ class Ui_DisplayPrincipal(object):
                             # Si había alarma de SPI activa la desactivo porque ahora SPI = "-"
                             self.radioButton_AlarmaFisiologicaReconocida.setChecked(False)
                             self.frame_AlarmasFisiologicas.hide()
-                            self.timer_border_color_SPI.stop()
+                            try: 
+                                self.timer_border_color_SPI.stop() 
+                            except:
+                                pass
                             self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group box
                             # Actualizo la variable global 'alarma' porque ya no hay condición de alarma
                             alarma_actual = "-"
@@ -1130,7 +1132,10 @@ class Ui_DisplayPrincipal(object):
                         # Si había alarma de SPI activa la desactivo porque ahora SPI = "-"
                         self.radioButton_AlarmaFisiologicaReconocida.setChecked(False)
                         self.frame_AlarmasFisiologicas.hide()
-                        self.timer_border_color_SPI.stop()
+                        try: 
+                            self.timer_border_color_SPI.stop() 
+                        except:
+                            pass
                         self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group box
                         # Actualizo la variable global 'alarma' porque ya no hay condición de alarma
                         alarma_actual = "-"
@@ -1151,7 +1156,10 @@ class Ui_DisplayPrincipal(object):
                     # Si había alarma de SPI activa la desactivo porque ahora SPI = "-"
                     self.radioButton_AlarmaFisiologicaReconocida.setChecked(False)
                     self.frame_AlarmasFisiologicas.hide()
-                    self.timer_border_color_SPI.stop()
+                    try: 
+                        self.timer_border_color_SPI.stop() 
+                    except:
+                        pass
                     self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group boxç
                     self.centralwidget.setStyleSheet("background-color: #000000;")
 
@@ -1650,7 +1658,10 @@ class Ui_DisplayPrincipal(object):
                 tiempo_condicion = 0
                 self.radioButton_AlarmaFisiologicaReconocida.setChecked(False)
                 self.frame_AlarmasFisiologicas.hide()
-                self.timer_border_color_SPI.stop() # Freno el timer para que deje de parpadear
+                try: 
+                    self.timer_border_color_SPI.stop() 
+                except:
+                    pass
                 self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group box
                 global alarma
                 if alarma == "Maximo" or alarma == "Minimo":
