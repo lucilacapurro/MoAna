@@ -1252,10 +1252,10 @@ class Ui_DisplayPrincipal(object):
             
             print(alarma)
             if alarma == "Movimiento":
-                descripcion_alarma = alarma + "del dedo"
+                descripcion_alarma = alarma + " del dedo"
             
             elif alarma == "Desconexión":
-                descripcion_alarma = alarma + "del sensor"
+                descripcion_alarma = alarma + " del sensor"
             
             elif alarma == "Minimo":
                 descripcion_alarma = "SPI < " + str(alarmas_seteadas[1]) + " por " +  str(alarmas_seteadas[2]) + " minutos " 
