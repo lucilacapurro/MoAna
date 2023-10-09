@@ -20,13 +20,15 @@ import pygame #winsound
 from openpyxl import load_workbook
 import copy
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-
 import pyqtgraph as pg
 import csv
 import time
 import serial
+import threading
+import subprocess
 
-from ProcesamientoOnline import funcEntropiaVentana, funcDetectarEntropia, funcDetectarDesconexion, funcDetectarPicos, funcEliminarPicosSubida, funcEliminarPicosOutliers, funcEliminarDiastolicos, funcDetectarOnsets, funcHBI, funcPPGA, funcSPIi, funcPromedio, funcNormalizarParametro, TF_HBI, TF_PPGA
+from ProcesamientoOnline import funcEntropiaVentana, funcDetectarEntropia, funcDetectarDesconexionSensor, funcDetectarDesconexionDedo, funcObtenerHR, funcFiltroBP, funcFiltroLP, funcFiltroHP, funcFiltrar, funcProcesamiento, funcDetectarPicos, funcEliminarPicosSubida, funcEliminarPicosOutliers, funcEliminarDiastolicos, funcDetectarOnsets, funcHBI, funcPPGA, funcSPIi, funcPromedio, funcNormalizarParametro, TF_HBI, TF_PPGA
+from GraficoSPI import funcGenerarGraficos
 
 global fs 
 fs = 25
@@ -122,6 +124,11 @@ procedimientos = df_lista_eventos['procedimientos'].dropna().to_list()
 global intercurrencias
 intercurrencias = df_lista_eventos['intercurrencias'].dropna().to_list()
 
+global SPIEstados, SPIFranjas, PorcentajesSPI, porcentajes
+SPIEstados = None
+SPIFranjas = None 
+PorcentajesSPI = None
+porcentajes = None
 
 ########################################################################################################################################################
 
@@ -169,6 +176,7 @@ class SerialCommunication(QThread):
         self.serial_port = serial.Serial(self.port, self.baudrate)
         nueva_muestra = 0
         cant_muestras = 0
+        cant_2096921 = 0
 
         print("Inicio de adquisicion de datos.")
 
@@ -182,7 +190,7 @@ class SerialCommunication(QThread):
                     
                 nueva_muestra += 1
                 
-                print("nuevo val")
+                print(new_data)
                 if new_data != prev_data:
 
                     global data
@@ -190,13 +198,19 @@ class SerialCommunication(QThread):
 
                     cant_muestras += 1
 
-                    print(new_data)
+                    #print(new_data)
 
                     if cant_muestras%20==0:
-                        print("emite señal")
+                        #print("emite señal")
                         self.data_received.emit(str(new_data))
 
                     prev_data = new_data 
+                
+                elif new_data == -2096921:
+                    cant_2096921 += 1
+                    if cant_2096921 == 2:
+                        prev_data = 0
+                        cant_2096921 = 0
 
 
 ########################################################################################################################################################
@@ -211,8 +225,8 @@ class Ui_DisplayPrincipal(object):
         self.ui = Ui_AjusteVisualizacionGraficaSPI()
         self.ui.setupUi(self.windowAjusteVisualizacionGraficaSPI)
         self.windowAjusteVisualizacionGraficaSPI.show()
-        # Establecer la posición de la nueva ventana en la pantalla
-        self.windowAjusteVisualizacionGraficaSPI.move(320, 345)
+        # Cambio la posición de la nueva ventana en la pantalla
+        self.windowAjusteVisualizacionGraficaSPI.move(430, 355)
         global restablecido
         restablecido = False
 
@@ -222,15 +236,16 @@ class Ui_DisplayPrincipal(object):
         self.ui = Ui_SetUpAlarmas()
         self.ui.setupUi(self.windowSetUpAlarmas)
         self.windowSetUpAlarmas.show() 
-        # Establecer la posición de la nueva ventana en la pantalla
-        self.windowSetUpAlarmas.move(280, 340)        
+        # Cambio la posición de la nueva ventana en la pantalla
+        self.windowSetUpAlarmas.move(370, 355)        
 
     def openOpcionesInforme(self):
         from OpcionesInforme import Ui_OpcionesInforme
         self.windowOpcionesInforme = QtWidgets.QMainWindow()
         self.ui = Ui_OpcionesInforme()
         self.ui.setupUi(self.windowOpcionesInforme)
-        self.windowOpcionesInforme.show()
+        self.ui.funcRecibirParametro("Principal") # Le paso el parámetro "Principal" para que sepa desde qué ventana llamo a OpcionesInforme
+        self.windowOpcionesInforme.showMaximized()
 
     #############################################################################################
 
@@ -584,7 +599,10 @@ class Ui_DisplayPrincipal(object):
         self.label_ConfigurarAlarmas = QtWidgets.QLabel(self.groupBox_Alarmas)
         self.label_ConfigurarAlarmas.setGeometry(QtCore.QRect(50, 130, 40, 40))
         self.label_ConfigurarAlarmas.setObjectName("label_ConfigurarAlarmas")
-        self.imagen_ConfigurarAlarmas = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\ConfigurarAlarmas.png")
+        directorio_actual = os.path.abspath(os.path.dirname(__file__))
+        nombre_imagen_configurar_alarmas = 'ConfigurarAlarmas.png'
+        path_imagen_configurar_alarmas = os.path.join(directorio_actual, nombre_imagen_configurar_alarmas)
+        self.imagen_ConfigurarAlarmas = QPixmap(path_imagen_configurar_alarmas)
         self.imagen_ConfigurarAlarmas = self.imagen_ConfigurarAlarmas.scaled(self.label_ConfigurarAlarmas.size(), QtCore.Qt.KeepAspectRatio)
         self.label_ConfigurarAlarmas.setPixmap(self.imagen_ConfigurarAlarmas)
 
@@ -744,14 +762,18 @@ class Ui_DisplayPrincipal(object):
         self.label_AlarmaFisiologicaActiva = QtWidgets.QLabel(self.frame_AlarmasFisiologicas)
         self.label_AlarmaFisiologicaActiva.setGeometry(QtCore.QRect(5, 5, 25, 25))
         self.label_AlarmaFisiologicaActiva.setObjectName("label_AlarmaFisiologicaActiva")
-        self.imagen_AlarmaFisiologicaActiva = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\AlarmaActiva.png")
+        nombre_imagen_alarma_activa = 'AlarmaActiva.png'
+        path_imagen_alarma_activa = os.path.join(directorio_actual, nombre_imagen_alarma_activa)
+        self.imagen_AlarmaFisiologicaActiva = QPixmap(path_imagen_alarma_activa)
         self.imagen_AlarmaFisiologicaActiva = self.imagen_AlarmaFisiologicaActiva.scaled(self.label_AlarmaFisiologicaActiva.size(), QtCore.Qt.KeepAspectRatio)
         self.label_AlarmaFisiologicaActiva.setPixmap(self.imagen_AlarmaFisiologicaActiva)
         
         self.label_AlarmaFisiologicaSigno = QtWidgets.QLabel(self.frame_AlarmasFisiologicas)
         self.label_AlarmaFisiologicaSigno.setGeometry(QtCore.QRect(35, 5, 25, 25))
         self.label_AlarmaFisiologicaSigno.setObjectName("label_AlarmaFisiologicaSigno")
-        self.imagen_AlarmaFisiologicaSigno = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\Signo.jpg")
+        nombre_imagen_signo = 'Signo.jpg'
+        path_imagen_signo = os.path.join(directorio_actual, nombre_imagen_signo)
+        self.imagen_AlarmaFisiologicaSigno = QPixmap(path_imagen_signo)
         self.imagen_AlarmaFisiologicaSigno = self.imagen_AlarmaFisiologicaSigno.scaled(self.label_AlarmaFisiologicaSigno.size(), QtCore.Qt.KeepAspectRatio)
         self.label_AlarmaFisiologicaSigno.setPixmap(self.imagen_AlarmaFisiologicaSigno)
 
@@ -768,7 +790,9 @@ class Ui_DisplayPrincipal(object):
         self.label_AlarmaFisiologicaReconocida = QtWidgets.QLabel(self.frame_AlarmasFisiologicas)
         self.label_AlarmaFisiologicaReconocida.setGeometry(QtCore.QRect(5, 35, 25, 25))
         self.label_AlarmaFisiologicaReconocida.setObjectName("label_AlarmaFisiologicaReconocida")
-        self.imagen_AlarmaFisiologicaReconocida = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\AlarmaReconocida.png")
+        nombre_imagen_alarma_reconocida = 'AlarmaReconocida.png'
+        path_imagen_alarma_reconocida = os.path.join(directorio_actual, nombre_imagen_alarma_reconocida)
+        self.imagen_AlarmaFisiologicaReconocida = QPixmap(path_imagen_alarma_reconocida)
         self.imagen_AlarmaFisiologicaReconocida = self.imagen_AlarmaFisiologicaReconocida.scaled(self.label_AlarmaFisiologicaReconocida.size(), QtCore.Qt.KeepAspectRatio)
         self.label_AlarmaFisiologicaReconocida.setPixmap(self.imagen_AlarmaFisiologicaReconocida)
         self.label_AlarmaFisiologicaReconocida.hide()
@@ -796,16 +820,25 @@ class Ui_DisplayPrincipal(object):
         self.label_AlarmaTecnicaActiva = QtWidgets.QLabel(self.frame_AlarmasTecnicas)
         self.label_AlarmaTecnicaActiva.setGeometry(QtCore.QRect(5, 5, 25, 25))
         self.label_AlarmaTecnicaActiva.setObjectName("label_AlarmaTecnicaActiva")
-        self.imagen_AlarmaTecnicaActiva = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\AlarmaActiva.png")
+        self.imagen_AlarmaTecnicaActiva = QPixmap(path_imagen_alarma_activa)
         self.imagen_AlarmaTecnicaActiva = self.imagen_AlarmaTecnicaActiva.scaled(self.label_AlarmaTecnicaActiva.size(), QtCore.Qt.KeepAspectRatio)
         self.label_AlarmaTecnicaActiva.setPixmap(self.imagen_AlarmaTecnicaActiva)
         
         self.label_AlarmaTecnicaSigno = QtWidgets.QLabel(self.frame_AlarmasTecnicas)
         self.label_AlarmaTecnicaSigno.setGeometry(QtCore.QRect(35, 5, 25, 25))
         self.label_AlarmaTecnicaSigno.setObjectName("label_AlarmaTecnicaSigno")
-        self.imagen_AlarmaTecnicaSigno = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\Signo.jpg")
+        self.imagen_AlarmaTecnicaSigno = QPixmap(path_imagen_signo)
         self.imagen_AlarmaTecnicaSigno = self.imagen_AlarmaTecnicaSigno.scaled(self.label_AlarmaTecnicaSigno.size(), QtCore.Qt.KeepAspectRatio)
         self.label_AlarmaTecnicaSigno.setPixmap(self.imagen_AlarmaTecnicaSigno)
+
+        self.label_AlarmaTecnicaSignoDoble = QtWidgets.QLabel(self.frame_AlarmasTecnicas)
+        self.label_AlarmaTecnicaSignoDoble.setGeometry(QtCore.QRect(35, 5, 25, 25))
+        self.label_AlarmaTecnicaSignoDoble.setObjectName("label_AlarmaTecnicaSignoDoble")
+        nombre_imagen_signoDoble = 'SignoDoble.png'
+        path_imagen_signoDoble = os.path.join(directorio_actual, nombre_imagen_signoDoble)
+        self.imagen_AlarmaTecnicaSignoDoble = QPixmap(path_imagen_signoDoble)
+        self.imagen_AlarmaTecnicaSignoDoble = self.imagen_AlarmaTecnicaSignoDoble.scaled(self.label_AlarmaTecnicaSignoDoble.size(), QtCore.Qt.KeepAspectRatio)
+        self.label_AlarmaTecnicaSignoDoble.setPixmap(self.imagen_AlarmaTecnicaSignoDoble)
 
         self.label_MensajeAlarmaTecnicaMovimiento = QtWidgets.QLabel(self.frame_AlarmasTecnicas)
         self.label_MensajeAlarmaTecnicaMovimiento.setGeometry(QtCore.QRect(70, 5, 300, 25))
@@ -818,9 +851,9 @@ class Ui_DisplayPrincipal(object):
         self.label_MensajeAlarmaTecnicaDesconexion.setObjectName("label_MensajeAlarmaTecnicaDesconexion")
 
         self.label_AlarmaTecnicaReconocida = QtWidgets.QLabel(self.frame_AlarmasTecnicas)
-        self.label_AlarmaTecnicaReconocida.setGeometry(QtCore.QRect(585, 5, 25, 25))
+        self.label_AlarmaTecnicaReconocida.setGeometry(QtCore.QRect(570, 5, 25, 25))
         self.label_AlarmaTecnicaReconocida.setObjectName("label_AlarmaTecnicaReconocida")
-        self.imagen_AlarmaTecnicaReconocida = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\AlarmaReconocida.png")
+        self.imagen_AlarmaTecnicaReconocida = QPixmap(path_imagen_alarma_reconocida)
         self.imagen_AlarmaTecnicaReconocida = self.imagen_AlarmaTecnicaReconocida.scaled(self.label_AlarmaTecnicaReconocida.size(), QtCore.Qt.KeepAspectRatio)
         self.label_AlarmaTecnicaReconocida.setPixmap(self.imagen_AlarmaTecnicaReconocida)
         self.label_AlarmaTecnicaReconocida.hide()
@@ -951,7 +984,7 @@ class Ui_DisplayPrincipal(object):
         # Archivo csv
         from InputDatosPaciente import path_archivo_datos
         with open(path_archivo_datos, 'w') as csv_file:
-            fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento", "alarma"]
+            fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento", "alarma", "limites_alarma", "descripcion_alarma"]
             csv_writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
             csv_writer.writeheader()
 
@@ -990,12 +1023,7 @@ class Ui_DisplayPrincipal(object):
         global ppg 
         ppg = int(new_value)
 
-        self.funcSetUpAlarmas()
-        
-        # Filtros
-        # @NOTE: BIBLIOGRAFIA: adaptative threshold method for the peak detetction of ppg
-        [b_HP,a_HP] = signal.butter(3, 0.85, btype = 'highpass', analog = False, output = 'ba', fs = fs) 
-        [b_LP,a_LP] = signal.butter(3, 5, btype = 'lowpass', analog = False, output = 'ba', fs = fs) 
+        self.funcSetUpAlarmas()        
 
         global ventana_ppg
         aux = ventana_ppg[1:]
@@ -1003,77 +1031,95 @@ class Ui_DisplayPrincipal(object):
         ventana_ppg = copy.deepcopy(aux)
             
         if muestra > largo:
-            desconexion = funcDetectarDesconexion(ventana_ppg)
+            HR = funcObtenerHR(senal_ppg=ventana_ppg, f1=0.1, f2=5, fs=fs)
 
-            ventana_filtrada_LP = signal.filtfilt(b_LP, a_LP, ventana_ppg)
-            ventana_filtrada_HP = signal.filtfilt(b_HP, a_HP, ventana_filtrada_LP)
+            ventana_filtrada = funcFiltrar(ventana_ppg, fs, HR, orden=3)
             
             if muestra%largo == 0:
-                if desconexion == False:
-                    global alarma
+                desconexion_sensor = funcDetectarDesconexionSensor(ventana_ppg)
 
-                    try:
-                        locs_peaks_ppg = funcDetectarPicos(ventana_filtrada_HP)
-                        locs_peaks_ppg_no_subida = funcEliminarPicosSubida(ventana_filtrada_HP, locs_peaks_ppg)
-                        locs_peaks_ppg_sistolicos = funcEliminarDiastolicos(ventana_filtrada_HP, locs_peaks_ppg_no_subida)
-                        locs_peaks_ppg_sin_outliers = funcEliminarPicosOutliers(locs_peaks_ppg_sistolicos, low_rri = 15, high_rri = 90)
-                        locs_onsets_ppg = funcDetectarOnsets(ventana_filtrada_HP, locs_peaks_ppg_sin_outliers)
-                        
-                        PPGA = funcPPGA(ventana_filtrada_HP, locs_peaks_ppg_sin_outliers, locs_onsets_ppg)
-                        HBI = funcHBI(locs_peaks_ppg_sin_outliers)
-
-                        HBI_prom = funcPromedio(HBI)
-                        PPGA_prom = funcPromedio(PPGA)
-                        
-                        global estado
-                        if estado == "-": # pre basal usa la normalizacion poblacional
-                            HBI_norm = funcNormalizarParametro(TF_HBI, int(HBI_prom))
-                            PPGA_norm = funcNormalizarParametro(TF_PPGA, int(PPGA_prom))
-                        
-                        elif estado == "basal": # basal usa la normalizacion poblacional y crea la distribucion individual
-                            global lista_individual_HBI, lista_individual_PPGA
-                            lista_individual_HBI.extend(HBI)
-                            lista_individual_PPGA.extend(PPGA)
-
-                            HBI_norm = funcNormalizarParametro(TF_HBI, int(HBI_prom))
-                            PPGA_norm = funcNormalizarParametro(TF_PPGA, int(PPGA_prom))
-
-                        else: #usa la normalizacion combinada
-                            global TF_HBI_combinada, TF_PPGA_combinada
-                            HBI_norm = funcNormalizarParametro(TF_HBI_combinada, int(HBI_prom))
-                            PPGA_norm = funcNormalizarParametro(TF_PPGA_combinada, int(PPGA_prom))
-
-                        global SPI
-                        SPI = funcSPIi(PPGA_norm, HBI_norm)
-                        self.textEdit_SPI.setText(str(SPI))
-                        self.textEdit_SPI.setAlignment(QtCore.Qt.AlignCenter)
-                        self.textEdit_SPI.setStyleSheet("color: black;")
-                        self.funcColorSPI()
-
-                        # Como pude calcular el SPI, sé que no hubo un error
-                        global ejecutar_alarma_auditiva
-                        ejecutar_alarma_auditiva = True # La próxima vez que haya una alarma auditiva quiero que suene
-
-                        # Desactivo alarmas por las dudas en caso de que se hayan activado antes, porque ya no hay condición de alarma 
-                        self.radioButton_AlarmaTecnicaReconocida.setChecked(False)
-                        self.frame_AlarmasTecnicas.hide()
-                        self.frame_PPG.setStyleSheet("background-color: rgb(0, 0, 0); border: 1px solid #F0F0F0;") # Le saco el borde de color al group box
-                        self.centralwidget.setStyleSheet("background-color: #000000;")
-
-                        # Si el borde del PPG estaba parpadeando, freno el timer
-                        try: 
-                            self.timer_border_color_PPG.stop() 
-                        except:
-                            pass
-
+                if desconexion_sensor == False:
+                    desconexion_dedo = funcDetectarDesconexionDedo(ventana_ppg)    
+                    if desconexion_dedo == False:
                         global alarma
-                        if alarma == "Desconexión" or alarma == "Movimiento":
-                            # Actualizo la variable global 'alarma' porque ya no hay condición de alarma técnica. No afecta si hay una fisiológica porque no entra al if
+                        try:
+                            PPGA, HBI = funcProcesamiento(ventana_filtrada, fs, HR)
+                            HBI_prom = funcPromedio(HBI)
+                            PPGA_prom = funcPromedio(PPGA)                      
+
+                            global estado
+                            if estado == "-": # pre basal usa la normalizacion poblacional
+                                HBI_norm = funcNormalizarParametro(TF_HBI, int(HBI_prom))
+                                PPGA_norm = funcNormalizarParametro(TF_PPGA, int(PPGA_prom))
+                            
+                            elif estado == "basal": # basal usa la normalizacion poblacional y crea la distribucion individual
+                                global lista_individual_HBI, lista_individual_PPGA
+                                lista_individual_HBI.extend(HBI)
+                                lista_individual_PPGA.extend(PPGA)
+
+                                HBI_norm = funcNormalizarParametro(TF_HBI, int(HBI_prom))
+                                PPGA_norm = funcNormalizarParametro(TF_PPGA, int(PPGA_prom))
+
+                            else: #usa la normalizacion combinada
+                                global TF_HBI_combinada, TF_PPGA_combinada
+                                HBI_norm = funcNormalizarParametro(TF_HBI_combinada, int(HBI_prom))
+                                PPGA_norm = funcNormalizarParametro(TF_PPGA_combinada, int(PPGA_prom))
+
+                            global SPI
+                            SPI = funcSPIi(PPGA_norm, HBI_norm)
+                            self.textEdit_SPI.setText(str(SPI))
+                            self.textEdit_SPI.setAlignment(QtCore.Qt.AlignCenter)
+                            self.textEdit_SPI.setStyleSheet("color: black;")
+                            self.funcColorSPI()
+
+                            # Como pude calcular el SPI, sé que no hubo un error
+                            global ejecutar_alarma_auditiva
+                            ejecutar_alarma_auditiva = True # La próxima vez que haya una alarma auditiva quiero que suene
+
+                            # Desactivo alarmas por las dudas en caso de que se hayan activado antes, porque ya no hay condición de alarma 
+                            self.radioButton_AlarmaTecnicaReconocida.setChecked(False)
+                            self.frame_AlarmasTecnicas.hide()
+                            self.frame_PPG.setStyleSheet("background-color: rgb(0, 0, 0); border: 1px solid #F0F0F0;") # Le saco el borde de color al group box
+                            self.centralwidget.setStyleSheet("background-color: #000000;")
+
+                            # Si el borde del PPG estaba parpadeando, freno el timer
+                            try: 
+                                self.timer_border_color_PPG.stop() 
+                            except:
+                                pass
+
+                            global alarma
+                            if alarma == "Desconexión" or alarma == "Movimiento":
+                                # Actualizo la variable global 'alarma' porque ya no hay condición de alarma técnica. No afecta si hay una fisiológica porque no entra al if
+                                alarma_actual = "-"
+                                alarma = alarma_actual
+
+                        except:
+                            # Se movió el sensor y no se puede hacer el cálculo del SPI 
+                            self.textEdit_SPI.setText("-")
+                            self.textEdit_SPI.setAlignment(QtCore.Qt.AlignCenter)
+                            self.textEdit_SPI.setStyleSheet("color: black;")
+                            self.funcColorSPI()
+
+                            SPI = np.nan
+
+                            # Si había alarma de SPI activa la desactivo porque ahora SPI = "-"
+                            self.radioButton_AlarmaFisiologicaReconocida.setChecked(False)
+                            self.frame_AlarmasFisiologicas.hide()
+                            self.timer_border_color_SPI.stop()
+                            self.groupBox_ReferenciaSPI.setStyleSheet("background-color: rgb(0, 0, 0);") # Le saco el borde de color al group box
+                            # Actualizo la variable global 'alarma' porque ya no hay condición de alarma
                             alarma_actual = "-"
                             alarma = alarma_actual
 
-                    except:
-                        # Se movió el sensor y no se puede hacer el cálculo del SPI 
+                            global contador_error_sensor
+                            contador_error_sensor += 1
+
+                            if contador_error_sensor == 3:
+                                # Ejecuto la alarma técnica
+                                self.funcEjecutarAlarmaTecnica(caso = "Movimiento")
+                                contador_error_sensor = 0
+                    else: # Se salió el dedo completamente y no se puede hacer el cálculo del SPI
                         self.textEdit_SPI.setText("-")
                         self.textEdit_SPI.setAlignment(QtCore.Qt.AlignCenter)
                         self.textEdit_SPI.setStyleSheet("color: black;")
@@ -1090,14 +1136,9 @@ class Ui_DisplayPrincipal(object):
                         alarma_actual = "-"
                         alarma = alarma_actual
 
-                        global contador_error_sensor
-                        contador_error_sensor += 1
+                        # Ejecuto la alarma técnica
+                        self.funcEjecutarAlarmaTecnica(caso = "Movimiento")
 
-                        if contador_error_sensor == 3:
-                            # Ejecuto la alarma técnica
-                            self.funcEjecutarAlarmaTecnica(caso = "Movimiento")
-                            contador_error_sensor = 0
-                            
                 else:
                     # Se detectó desconexión del sensor y no se puede hacer el cálculo del SPI 
                     self.textEdit_SPI.setText("-")
@@ -1117,7 +1158,6 @@ class Ui_DisplayPrincipal(object):
                     # Ejecuto la alarma técnica
                     self.funcEjecutarAlarmaTecnica(caso = "Desconexión")
 
-        
                 self.senal_spi=self.senal_spi[1:]
                 self.senal_spi.append(SPI)
 
@@ -1185,7 +1225,7 @@ class Ui_DisplayPrincipal(object):
                             self.plt_SPI.addItem(linea_vertical)
 
             global nuevo_valor_filtrado
-            nuevo_valor_filtrado = ventana_filtrada_HP[-1]
+            nuevo_valor_filtrado = ventana_filtrada[-1]
 
             self.y=self.y[1:]
             self.y.append(nuevo_valor_filtrado)
@@ -1210,9 +1250,26 @@ class Ui_DisplayPrincipal(object):
             if muestra%largo != 0:
                 spi_promedio = "-"
             
+            print(alarma)
+            if alarma == "Movimiento":
+                descripcion_alarma = alarma + "del dedo"
+            
+            elif alarma == "Desconexión":
+                descripcion_alarma = alarma + "del sensor"
+            
+            elif alarma == "Minimo":
+                descripcion_alarma = "SPI < " + str(alarmas_seteadas[1]) + " por " +  str(alarmas_seteadas[2]) + " minutos " 
+
+            elif alarma == "Maximo":
+                descripcion_alarma = "SPI > " + str(alarmas_seteadas[0]) + " por " + str(alarmas_seteadas[2]) + " minutos " 
+            
+            else:
+                descripcion_alarma = "-"
+
+
             from InputDatosPaciente import path_archivo_datos
             with open(path_archivo_datos, 'a') as csv_file:
-                fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento", "alarma"]
+                fieldnames = ["muestra", "tiempo", "ppg", "ppg filtrado", "spi", "spi_promedio", "estado", "tipo evento", "evento", "alarma", "limites_alarma", "descripcion_alarma"]
                 csv_writer = csv.DictWriter(csv_file, fieldnames = fieldnames)
 
                 info = {
@@ -1225,7 +1282,9 @@ class Ui_DisplayPrincipal(object):
                     "estado": estado,
                     "tipo evento": tipo_evento,
                     "evento": nombre_evento,
-                    "alarma": alarma
+                    "alarma": alarma,
+                    "limites_alarma": alarmas_seteadas, 
+                    "descripcion_alarma": descripcion_alarma
                 }
                 csv_writer.writerow(info)
 
@@ -1495,7 +1554,7 @@ class Ui_DisplayPrincipal(object):
         pop_up.move(350, 400)
         pop_up.exec_()
 
-        #Agrego este monitoreo al registro de monitoreos
+        # Agrego este monitoreo al registro de monitoreos
         nombre_excel_registros = 'Registro Pacientes.xlsx'
         path_registros = os.path.join(directorio_actual, nombre_excel_registros)
         excel_registros = load_workbook(path_registros)
@@ -1506,6 +1565,11 @@ class Ui_DisplayPrincipal(object):
         nombre = listaDatosPaciente[0]
         apellido = listaDatosPaciente[1]
         id = listaDatosPaciente[2]
+
+        # Paso todo a mayúsculas para el guardado
+        nombre = nombre.upper()
+        apellido = apellido.upper()
+        id = id.upper()
 
         nombre_archivo_informe = 'Informe ' + id_global_principal + '.pdf'
 
@@ -1518,7 +1582,9 @@ class Ui_DisplayPrincipal(object):
         #Ejecuto GraficoSPI.py
         nombre_archivo_ejecutar_GraficoSPI = 'GraficoSPI.py'
         path_archivo_ejecutar_GraficoSPI = os.path.join(directorio_actual, nombre_archivo_ejecutar_GraficoSPI)
-        exec(open(path_archivo_ejecutar_GraficoSPI).read())
+        #exec(open(path_archivo_ejecutar_GraficoSPI).read())
+        global SPIEstados, SPIFranjas, PorcentajesSPI, porcentajes
+        SPIEstados, SPIFranjas, PorcentajesSPI, porcentajes = funcGenerarGraficos(caso = "Principal")
 
         #Ejecuto PDF.py
         nombre_archivo_ejecutar_PDF = 'PDF.py'
@@ -1652,8 +1718,6 @@ class Ui_DisplayPrincipal(object):
             self.timer_border_color_SPI.timeout.connect(self.funcCambiarColorFrameSPI)
             self.timer_border_color_SPI.start(500)  # Cambiar cada 0.5 segundos
 
-            # Alarma auditiva
-            #self.funcAlarmaAuditiva(caso)
 
     def funcCambiarColorFrameSPI(self):
         self.border_color_index_SPI = (self.border_color_index_SPI + 1) % len(self.border_colors_SPI)
@@ -1672,11 +1736,15 @@ class Ui_DisplayPrincipal(object):
         self.frame_AlarmasTecnicas.show()
 
         if caso == "Movimiento":
-            self.label_MensajeAlarmaTecnicaMovimiento.show()
-            self.label_MensajeAlarmaTecnicaDesconexion.hide()
+            self.label_MensajeAlarmaTecnicaMovimiento.show() # Se muestra un label con la condición de alarma 'Movimiento'
+            self.label_AlarmaTecnicaSigno.show() # Se muestra un signo de admiración porque la alarma es de baja prioridad
+            self.label_MensajeAlarmaTecnicaDesconexion.hide() # Se oculta el label de la condición de alarma 'Desconexión'
+            self.label_AlarmaTecnicaSignoDoble.hide() # Se oculta el signo de admiración doble que corresponde a la condiciòn de alarma 'Desconexión'
         elif caso == "Desconexión":
-            self.label_MensajeAlarmaTecnicaDesconexion.show()
-            self.label_MensajeAlarmaTecnicaMovimiento.hide()
+            self.label_MensajeAlarmaTecnicaDesconexion.show() # Se muestra un label con la condición de alarma 'Desconexión'
+            self.label_AlarmaTecnicaSignoDoble.show() # Se muestran dos signos de admiración porque la alarma es de media prioridad
+            self.label_MensajeAlarmaTecnicaMovimiento.hide() # Se oculta el label de la condición de alarma 'Movimineto'
+            self.label_AlarmaTecnicaSigno.hide() # Se oculta el signo de admiración simple que corresponde a la condiciòn de alarma 'Movimiento'
 
         # Actualizo la variable global 'alarma' porque tengo una condición de alarma técnica
         alarma_actual = caso
@@ -1696,26 +1764,32 @@ class Ui_DisplayPrincipal(object):
 
             global ejecutar_alarma_auditiva
             if ejecutar_alarma_auditiva == True:
-                self.funcAlarmaAuditiva(caso)
-                ejecutar_alarma_auditiva = False
+                self.funcAlarmaAuditiva(caso) 
+                ejecutar_alarma_auditiva = True
 
 
-    def funcAlarmaAuditiva(self, caso):
+    def funcAlarmaAuditiva(self, caso): 
         directorio_actual = os.path.abspath(os.path.dirname(__file__))
-        if caso == "Movimiento" or caso == "Desconexión": # En realidad si no vamos a hacer alarmas auditivas por SPI esto se puede ir
-            nombre_alarma = 'pulso_personalizado_tecnica.wav'
-        elif caso == "Maximo" or caso == "Minimo":
-            nombre_alarma = 'pulso_personalizado_fisiologica.wav'
+        if caso == "Desconexión":
+            nombre_alarma = 'pulso_personalizado_MP.wav' # Alarma auditiva de media prioridad
+            tiempo_espera_seg = 1 # Como ejecuto 3 pulsos de 0.15 s cada uno y separados entre sí por 0.2 s (por norma), espero 1 segundo la ejecución
+        elif caso == "Movimiento":
+            nombre_alarma = 'pulso_personalizado_LP.wav' # Alarma auditiva de baja prioridad
+            tiempo_espera_seg = 0.15 # Como ejecuto 1 pulso de 0.15 s, espero 1.5 s su ejecución
+
         path = os.path.join(directorio_actual, nombre_alarma)
-        # Reproducir el archivo de audio con pygame
-        pygame.mixer.init()
-        pygame.mixer.music.load(path)
-        pygame.mixer.music.play()
-        # Esperar hasta que se termine de reproducir
-        pygame.time.wait(int(0.2 * 1000))  # Esperar según la duración del pulso en milisegundos --> duración de 0.2s para ambos
-        # Detener la reproducción
-        pygame.mixer.music.stop()
-    
+
+        # Armo una función aparte para la reproduccción de la alarma para poder hacerlo en un thread separado 
+        def funcReproducirAlarmaAuditiva():
+            pygame.mixer.init()
+            pygame.mixer.music.load(path)
+            pygame.mixer.music.play()
+            pygame.time.wait(int(tiempo_espera_seg * 1000))  # Espero según la duración del pulso (o tren) en milisegundos
+            pygame.mixer.music.stop()
+
+        # Creo el thread en el que se reproduce la alarma --> es para que no se bloquee el resto del programa mientras espero a que suene
+        alarma_thread = threading.Thread(target = funcReproducirAlarmaAuditiva)
+        alarma_thread.start()    
 
     def funcCambiarColorFramePPG(self):
         self.border_color_index_PPG = (self.border_color_index_PPG + 1) % len(self.border_colors_PPG)

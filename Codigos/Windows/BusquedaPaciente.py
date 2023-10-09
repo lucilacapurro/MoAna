@@ -9,12 +9,18 @@ import plotly
 import plotly.express as px
 import pandas as pd 
 import os
+import subprocess
 
+from GraficoSPI import funcGenerarGraficos
 #############################################################################################################################
 
 global id_global_busqueda
 id_global_busqueda = ""
 
+global SPIEstados, SPIFranjas, PorcentajesSPI
+SPIEstados = None
+SPIFranjas = None 
+PorcentajesSPI = None
 #############################################################################################################################
 
 class Ui_BusquedaPacientes(object):
@@ -27,7 +33,7 @@ class Ui_BusquedaPacientes(object):
         self.windowInicio = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.windowInicio)
-        self.windowInicio.show()
+        self.windowInicio.showMaximized()
 
     # Ventana de opciones de informe para el registro seleccionado
     def openOpcionesInforme(self):
@@ -35,7 +41,8 @@ class Ui_BusquedaPacientes(object):
         self.windowOpcionesInforme = QtWidgets.QMainWindow()
         self.ui = Ui_OpcionesInforme()
         self.ui.setupUi(self.windowOpcionesInforme)
-        self.windowOpcionesInforme.show()
+        self.ui.funcRecibirParametro("Busqueda") # Le paso el parámetro "Búsqueda" para que sepa desde qué ventana llamo a OpcionesInforme
+        self.windowOpcionesInforme.showMaximized()
 
     # Funciones para abrir los teclados:
 
@@ -45,7 +52,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre)  
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 232)
+        self.virtual_keyboard.move(145, 175)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Apellido
     def openTecladoVirtual_Apellido(self, target_edit):
@@ -53,7 +60,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido)  
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 280)
+        self.virtual_keyboard.move(145, 230)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit ID
     def openTecladoVirtual_ID(self, target_edit):
@@ -61,7 +68,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID)  
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 325)
+        self.virtual_keyboard.move(145, 285)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Dia
     def openTecladoVirtual_Dia(self, target_edit):
@@ -69,7 +76,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Dia)  
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 370)
+        self.virtual_keyboard.move(145, 340)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Mes
     def openTecladoVirtual_Mes(self, target_edit):
@@ -77,7 +84,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Mes)  
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 370)
+        self.virtual_keyboard.move(145, 340)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Año
     def openTecladoVirtual_Ao(self, target_edit):
@@ -85,7 +92,7 @@ class Ui_BusquedaPacientes(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Ao)  
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 370)
+        self.virtual_keyboard.move(145, 340)
 
 
 #############################################################################################################################
@@ -432,15 +439,18 @@ class Ui_BusquedaPacientes(object):
                     self.lineEdit_BuscarAo.setEnabled(True)
             
         if nombre!='':
+            nombre = nombre.upper()
             filtro_nombre = df_lista_busqueda['nombre'].str.contains(nombre) 
             df_lista_busqueda = df_lista_busqueda[filtro_nombre]
         
         if apellido!='':
+            apellido = apellido.upper()
             filtro_apellido = df_lista_busqueda['apellido'].str.contains(apellido) 
             df_lista_busqueda = df_lista_busqueda[filtro_apellido]
 
         if id!='':
             id = str(id)
+            id = id.upper()
             df_lista_busqueda = df_lista_busqueda[df_lista_busqueda.id == id]
 
         # Si no se encuentran resultados para la búsqueda
@@ -495,7 +505,9 @@ class Ui_BusquedaPacientes(object):
         directorio_actual = os.path.abspath(os.path.dirname(__file__))
         nombre_archivo_ejecutar_GraficoSPI = 'GraficoSPI.py'
         path_archivo_ejecutar_GraficoSPI = os.path.join(directorio_actual, nombre_archivo_ejecutar_GraficoSPI)
-        exec(open(path_archivo_ejecutar_GraficoSPI).read())
+        #exec(open(path_archivo_ejecutar_GraficoSPI).read())
+        global SPIEstados, SPIFranjas, PorcentajesSPI
+        SPIEstados, SPIFranjas, PorcentajesSPI, porcentajes = funcGenerarGraficos(caso = "Busqueda")
 
 
 #############################################################################################################################

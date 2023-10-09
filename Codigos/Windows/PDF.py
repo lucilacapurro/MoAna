@@ -9,7 +9,7 @@ from reportlab.lib.utils import ImageReader
 
 from InputDatosPaciente import listaDatosPaciente, id_global_principal, fecha, hora
 from Principal import listaInicioEstados, listaTiemposEventos, listaEventos
-from GraficoSPI import porcentajes
+from Principal import porcentajes
 
 ###############################################################################################################
 

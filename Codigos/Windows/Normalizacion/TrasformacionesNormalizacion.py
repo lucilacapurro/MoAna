@@ -14,10 +14,10 @@ from openpyxl import load_workbook
 def funcHistograma(parametro, tipo_parametro):
   if tipo_parametro == "HBI":
     min = 0
-    max = 80
+    max = 100
   elif tipo_parametro == "PPGA":
-    min = 1000
-    max = 80000
+    min = 0
+    max = 100000
   bins = max-min
   vector_parametro = np.linspace(min, max, bins+1, dtype = int)
   vector_hist = np.zeros(bins+1)

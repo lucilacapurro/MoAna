@@ -13,7 +13,7 @@ class Ui_MainWindow(object):
         self.windowInputDatosPaciente = QtWidgets.QMainWindow()
         self.ui = Ui_InputDatosPaciente()
         self.ui.setupUi(self.windowInputDatosPaciente)
-        self.windowInputDatosPaciente.show()
+        self.windowInputDatosPaciente.showMaximized()
 
     # Función para abrir la ventana de búsqueda de registros previos
     def openBusquedaPaciente(self):
@@ -21,7 +21,7 @@ class Ui_MainWindow(object):
         self.windowBusquedaPaciente = QtWidgets.QMainWindow()
         self.ui = Ui_BusquedaPacientes()
         self.ui.setupUi(self.windowBusquedaPaciente)
-        self.windowBusquedaPaciente.show()
+        self.windowBusquedaPaciente.showMaximized()
 
     # Función para abrir la ventana de personalización de eventos
     def openConfiguraciones(self):
@@ -29,7 +29,7 @@ class Ui_MainWindow(object):
         self.windowConfiguraciones = QtWidgets.QMainWindow()
         self.ui = Ui_Configuraciones()
         self.ui.setupUi(self.windowConfiguraciones)
-        self.windowConfiguraciones.show()
+        self.windowConfiguraciones.showMaximized()
 
 ##############################################################################################
 

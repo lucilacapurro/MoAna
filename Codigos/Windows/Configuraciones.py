@@ -31,28 +31,28 @@ class Ui_Configuraciones(object):
         self.windowInicio = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.windowInicio)
-        self.windowInicio.show()
+        self.windowInicio.showMaximized()
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Farmaco
     def openTecladoVirtual_Farmaco(self, target_edit):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Farmaco) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 325)
+        self.virtual_keyboard.move(145, 290)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Procedimiento Quirurgico
     def openTecladoVirtual_ProcQuirurgico(self, target_edit):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_ProcQuirurgico) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 425)
+        self.virtual_keyboard.move(145, 420)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Intercurrencias
     def openTecladoVirtual_Intercurrencia(self, target_edit):
         self.virtual_keyboard = VirtualKeyboard(target_edit)
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Intercurrencia) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 200)
+        self.virtual_keyboard.move(145, 180)
 
 #################################################################################################################################
 
@@ -130,7 +130,6 @@ class Ui_Configuraciones(object):
         self.lineEdit_Farmaco.setObjectName("lineEdit_Farmaco")
         self.lineEdit_Farmaco.textChanged.connect(lambda: self.funcVerificarTexto(caso = "Farmaco"))
 
-        
         self.pushButton_BorrarFarmaco = QtWidgets.QPushButton(self.groupBox_Configuraciones)
         self.pushButton_BorrarFarmaco.setGeometry(QtCore.QRect(440, 180, 80, 40))
         font = QtGui.QFont()
@@ -317,7 +316,7 @@ class Ui_Configuraciones(object):
         self.comboBox_Intercurrencia.raise_()
         self.pushButton_BorrarIntercurrencia.raise_()
         self.pushButton_AgregarIntercurrencia.raise_()
-        
+
         self.retranslateUi(Configuraciones)
         # Setea los combo box en la opción "-" = index 0
         self.comboBox_Farmaco.setCurrentIndex(0)
@@ -394,6 +393,9 @@ class Ui_Configuraciones(object):
 
     # Función para borrar eventos una vez habilitada la opción
     def funcBorrarEvento(self, tipo_evento):
+        global habilitar_teclado
+        habilitar_teclado = False
+
         if tipo_evento == 0: # farmaco
             index_borrar = self.comboBox_Farmaco.currentIndex()
             evento_borrar = self.comboBox_Farmaco.currentText()
@@ -415,6 +417,8 @@ class Ui_Configuraciones(object):
             intercurrencias.remove(evento_borrar)
             self.comboBox_Intercurrencia.removeItem(index_borrar)
             self.comboBox_Intercurrencia.setCurrentIndex(0)
+
+        habilitar_teclado = True
 
     def funcVerificarTexto(self, caso):
         if caso == "Farmaco":
@@ -468,6 +472,11 @@ class Ui_Configuraciones(object):
     # Función para guardar los eventos seteados
     def funcGuardarEventos(self):
         global farmacos, procedimientos, intercurrencias
+
+        farmacos = [x for x in farmacos if x is not None]
+        procedimientos = [x for x in procedimientos if x is not None]
+        intercurrencias = [x for x in intercurrencias if x is not None]
+
         farmacos.sort()
         procedimientos.sort()
         intercurrencias.sort()

@@ -1,15 +1,22 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QSpinBox
 from PyQt5.QtGui import QPixmap
+import os
 
 global alarmas
-alarmas = [50, 20, 15] #seteamos los valores default de las alarmas
+alarmas = [50, 20, 15] # Establecemos los valores default de las alarmas
+
+global index_actual 
+index_actual = 0
 
 class Ui_SetUpAlarmas(object):
     def setupUi(self, SetUpAlarmas):
         SetUpAlarmas.setObjectName("SetUpAlarmas")
         SetUpAlarmas.resize(632, 274)
         
+        # Almaceno la instancia de la ventana para después poder cerrar la ventana al guardar la configuración
+        self.ventana = SetUpAlarmas
+
         self.centralwidget = QtWidgets.QWidget(SetUpAlarmas)
         self.centralwidget.setObjectName("centralwidget")
         
@@ -25,7 +32,10 @@ class Ui_SetUpAlarmas(object):
         self.label_LimiteMaximo = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
         self.label_LimiteMaximo.setGeometry(QtCore.QRect(11, 40, 31, 31))
         self.label_LimiteMaximo.setObjectName("label_AlarmaTecnicaReconocida")
-        self.imagen_LimiteMaximo = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\LimiteMaximo.png")
+        directorio_actual = os.path.abspath(os.path.dirname(__file__))
+        nombre_imagen_limite_maximo = 'LimiteMaximo.png'
+        path_imagen_limite_maximo = os.path.join(directorio_actual, nombre_imagen_limite_maximo)
+        self.imagen_LimiteMaximo = QPixmap(path_imagen_limite_maximo)
         self.imagen_LimiteMaximo = self.imagen_LimiteMaximo.scaled(self.label_LimiteMaximo.size(), QtCore.Qt.KeepAspectRatio)
         self.label_LimiteMaximo.setPixmap(self.imagen_LimiteMaximo)
 
@@ -51,7 +61,9 @@ class Ui_SetUpAlarmas(object):
         self.label_LimiteMinimo = QtWidgets.QLabel(self.groupBox_SetUpAlarmas)
         self.label_LimiteMinimo.setGeometry(QtCore.QRect(11, 90, 31, 31))
         self.label_LimiteMinimo.setObjectName("label_AlarmaTecnicaReconocida")
-        self.imagen_LimiteMinimo = QPixmap(r"C:\Users\Zakie Assad\Proyecto Final\Git\MoAna\Codigos\Windows\LimiteMinimo.png")
+        nombre_imagen_limite_minimo = 'LimiteMinimo.png'
+        path_imagen_limite_minimo = os.path.join(directorio_actual, nombre_imagen_limite_minimo)
+        self.imagen_LimiteMinimo = QPixmap(path_imagen_limite_minimo)
         self.imagen_LimiteMinimo = self.imagen_LimiteMinimo.scaled(self.label_LimiteMinimo.size(), QtCore.Qt.KeepAspectRatio)
         self.label_LimiteMinimo.setPixmap(self.imagen_LimiteMinimo)
 
@@ -97,6 +109,8 @@ class Ui_SetUpAlarmas(object):
         self.comboBox_TiempoPermanencia.addItem("")
         self.comboBox_TiempoPermanencia.addItem("")
         self.comboBox_TiempoPermanencia.addItem("")
+        # Hago que siempre inicie en la última opción que haya tenido
+        self.comboBox_TiempoPermanencia.setCurrentIndex(index_actual)
         
         self.pushButton_GuardarAlarmas = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_GuardarAlarmas.setGeometry(QtCore.QRect(530, 200, 81, 31))
@@ -127,7 +141,7 @@ class Ui_SetUpAlarmas(object):
 
 ##############################################################################################################################
 #FUNCIONES
-    def funcChequearAlarmas(self): # VERIFICAR LOS CHEQUEOS EN CASO DE PERSONALIZAR LAS OPCIONES DE TIEMPO DE PERMANENCIA
+    def funcChequearAlarmas(self): 
         SPIMax = int(self.spinBox_MaxSPI.value())
         SPIMin = int(self.spinBox_MinSPI.value())
 
@@ -141,18 +155,14 @@ class Ui_SetUpAlarmas(object):
 
         else:
             TiempoPermanencia = int(self.comboBox_TiempoPermanencia.currentText().split(" ")[0])
+            global index_actual
+            index_actual = self.comboBox_TiempoPermanencia.currentIndex()
             if TiempoPermanencia < 4: # solo 15 o 30 son segundos y 1, 2 o 3 son minutos 
                 TiempoPermanencia = TiempoPermanencia * 60
             global alarmas 
             alarmas = [SPIMax, SPIMin, TiempoPermanencia]
 
-            pop_up = QMessageBox()
-            pop_up.setIcon(QMessageBox.Information)
-            pop_up.setWindowTitle("Alarma configurada")
-            pop_up.setText("La alarma fue configurada correctamente. Puede cerrar la ventana de configuración.")
-            pop_up.setStandardButtons(QMessageBox.Ok)
-            pop_up.move(350, 420)
-            pop_up.exec_()
+            self.ventana.close()
 
 #############################################################################################################################
 

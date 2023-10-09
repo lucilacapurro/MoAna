@@ -14,7 +14,7 @@ class VirtualKeyboard(QWidget):
 
     def init_ui(self):
         self.setWindowTitle('Teclado')
-        self.setGeometry(200, 200, 400, 200)
+        self.setGeometry(200, 200, 900, 200)
 
         layout = QVBoxLayout()
 

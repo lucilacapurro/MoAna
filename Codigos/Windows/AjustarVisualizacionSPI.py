@@ -6,13 +6,18 @@ from PyQt5.QtWidgets import QMessageBox
 global ajustes_graf_SPI
 ajustes_graf_SPI = 5
 
+global index_actual 
+index_actual = 0
 #############################################################################################################################
 
 class Ui_AjusteVisualizacionGraficaSPI(object):
     def setupUi(self, AjusteVisualizacionGraficaSPI):
         AjusteVisualizacionGraficaSPI.setObjectName("AjusteVisualizacionGraficaSPI")
         AjusteVisualizacionGraficaSPI.resize(532, 170)
-        
+    
+        # Almaceno la instancia de la ventana para después poder cerrar la ventana al guardar la configuración
+        self.ventana = AjusteVisualizacionGraficaSPI
+
         self.centralwidget = QtWidgets.QWidget(AjusteVisualizacionGraficaSPI)
         self.centralwidget.setObjectName("centralwidget")
         
@@ -55,6 +60,8 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
         self.comboBox_VentanaTiempoSPI.addItem("")
         self.comboBox_VentanaTiempoSPI.addItem("")
         self.comboBox_VentanaTiempoSPI.addItem("")
+        # Hago que siempre inicie en la última opción que haya tenido
+        self.comboBox_VentanaTiempoSPI.setCurrentIndex(index_actual)
 
         # Botón para Guardar Ajuste de visualizacion seleccionado
         self.pushButton_GuardarAjusteVisualizacionSPI = QtWidgets.QPushButton(self.groupBox_AjusteVisualizacionSPI)
@@ -80,6 +87,8 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
     # Función que trasforma las frases "x minutos u horas" a cantidad de minutos y ajusta el eje del gráfico
     def funcChequearAjustesSPI(self): 
         VentanaTiempoSPI = int(self.comboBox_VentanaTiempoSPI.currentText().split(" ")[0])
+        global index_actual
+        index_actual = self.comboBox_VentanaTiempoSPI.currentIndex()
 
         if VentanaTiempoSPI not in [5, 15, 30, 45]:
             VentanaTiempoSPI *= 60 # pasamos las horas a minutos 
@@ -87,13 +96,7 @@ class Ui_AjusteVisualizacionGraficaSPI(object):
         global ajustes_graf_SPI
         ajustes_graf_SPI = VentanaTiempoSPI 
 
-        pop_up = QMessageBox()
-        pop_up.setIcon(QMessageBox.Information)
-        pop_up.setWindowTitle("Ajustes configurados")
-        pop_up.setText("Los ajustes del gráfico de SPI fueron configurados correctamente. Puede cerrar la ventana de configuración.")
-        pop_up.setStandardButtons(QMessageBox.Ok)
-        pop_up.move(350, 420)
-        pop_up.exec_()
+        self.ventana.close()
 
 #############################################################################################################################
 

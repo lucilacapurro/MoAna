@@ -24,7 +24,7 @@ class Ui_DescargarInforme(object):
         self.windowOpcionesInforme = QtWidgets.QMainWindow()
         self.ui = Ui_OpcionesInforme()
         self.ui.setupUi(self.windowOpcionesInforme)
-        self.windowOpcionesInforme.show()
+        self.windowOpcionesInforme.showMaximized()
 
 #########################################################################################################################
 

@@ -2,11 +2,9 @@ from PyQt5 import QtCore, QtWidgets, QtWebEngineWidgets
 import plotly.graph_objs as go
 import os
 
-from GraficoSPI import SPIEstados, SPIFranjas, PorcentajesSPI
 
 global directorio_actual
 directorio_actual = os.path.abspath(os.path.dirname(__file__))
-
 
 class Ui_VisualizacionGraficos(object):
     def setupUi(self, VisualizacionGraficos):
@@ -60,24 +58,27 @@ class Ui_VisualizacionGraficos(object):
 ##############################################################################################################
 
     def funcGraficarEstadosSPI(self):
+        from OpcionesInforme import grafEstados
         # Convertir el objeto SPIEstados a contenido HTML
         html_nombre = "SPIEstados.html"
         path_relativo = os.path.join(directorio_actual, html_nombre)
-        html_content = SPIEstados.write_html(path_relativo)
+        html_content = grafEstados.write_html(path_relativo)
         self.webView.load(QtCore.QUrl().fromLocalFile(path_relativo))
 
     def funcGraficarFranjasSPI(self):
+        from OpcionesInforme import grafFranjas
         # Convertir el objeto SPIFranjas a contenido HTML
         html_nombre = "SPIFranjas.html"
         path_relativo = os.path.join(directorio_actual, html_nombre)
-        html_content = SPIFranjas.write_html(path_relativo)
+        html_content = grafFranjas.write_html(path_relativo)
         self.webView.load(QtCore.QUrl().fromLocalFile(path_relativo))
 
     def funcGraficarPorcentajesSPI(self):
+        from OpcionesInforme import grafPorcentajes
         # Convertir el objeto SPIProcentajes a contenido HTML
         html_nombre = "SPIPorcentajes.html"
         path_relativo = os.path.join(directorio_actual, html_nombre)
-        html_content = PorcentajesSPI.write_html(path_relativo)
+        html_content = grafPorcentajes.write_html(path_relativo)
         self.webView.load(QtCore.QUrl().fromLocalFile(path_relativo))
 
 ##############################################################################################################

@@ -35,7 +35,7 @@ class Ui_InputDatosPaciente(object):
         self.windowPrincipal = QtWidgets.QMainWindow()
         self.ui = Ui_DisplayPrincipal()
         self.ui.setupUi(self.windowPrincipal)
-        self.windowPrincipal.show()
+        self.windowPrincipal.showMaximized()
 
     # Volver a la ventana de inicio
     def openInicio(self):
@@ -43,7 +43,7 @@ class Ui_InputDatosPaciente(object):
         self.windowInicio = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.windowInicio)
-        self.windowInicio.show()
+        self.windowInicio.showMaximized()
 
 
     # Funciones para abrir los teclados:
@@ -54,7 +54,7 @@ class Ui_InputDatosPaciente(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Nombre) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 345)
+        self.virtual_keyboard.move(240, 270)
 
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit Apellido
     def openTecladoVirtual_Apellido(self, target_edit):
@@ -62,7 +62,7 @@ class Ui_InputDatosPaciente(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_Apellido) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 397)
+        self.virtual_keyboard.move(240, 360)
     
     # Función para abrir el teclado virtual y conectar la señal textEntered al QLineEdit ID
     def openTecladoVirtual_ID(self, target_edit):
@@ -70,7 +70,7 @@ class Ui_InputDatosPaciente(object):
         self.virtual_keyboard = VirtualKeyboard(target_edit)  
         self.virtual_keyboard.textEntered.connect(self.update_line_edit_ID) 
         self.virtual_keyboard.show()
-        self.virtual_keyboard.move(277, 445)
+        self.virtual_keyboard.move(240, 450)
 
 ##############################################################################################
 

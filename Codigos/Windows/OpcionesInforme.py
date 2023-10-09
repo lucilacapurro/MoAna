@@ -1,9 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import PyQt5.QtWebEngineWidgets
 import os 
+import time
+import win32gui
+import win32con
 
 from DescargarInforme import Ui_DescargarInforme
-from GraficoSPI import SPIEstados, SPIFranjas, PorcentajesSPI
+#from GraficoSPI import SPIEstados, SPIFranjas, PorcentajesSPI
 
 #############################################################################################
 
@@ -12,6 +15,18 @@ id_seleccionado = ""
 
 global ruta_relativa_informe
 ruta_relativa_informe = ""
+
+global caso 
+caso = ""
+
+global grafEstados
+grafEstados = None
+
+global grafFranjas
+grafFranjas = None
+
+global grafPorcentajes
+grafPorcentajes = None 
 
 #############################################################################################
 
@@ -24,7 +39,7 @@ class Ui_OpcionesInforme(object):
         self.windowDescargarInforme = QtWidgets.QMainWindow()
         self.ui = Ui_DescargarInforme()
         self.ui.setupUi(self.windowDescargarInforme)
-        self.windowDescargarInforme.show()
+        self.windowDescargarInforme.showMaximized()
 
     # Volver a la ventana de inicio
     def openInicio(self):
@@ -32,7 +47,7 @@ class Ui_OpcionesInforme(object):
         self.windowInicio = QtWidgets.QMainWindow()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self.windowInicio)
-        self.windowInicio.show()
+        self.windowInicio.showMaximized()
 
     # Abrir la ventana de visualizaciones de gráficos
     def openVisualizacionWebGraficos(self):
@@ -40,7 +55,7 @@ class Ui_OpcionesInforme(object):
         self.windowVisualizarWeb = QtWidgets.QMainWindow()
         self.ui = Ui_VisualizacionGraficos()
         self.ui.setupUi(self.windowVisualizarWeb)
-        self.windowVisualizarWeb.show()
+        self.windowVisualizarWeb.showMaximized()
 
 #############################################################################################
 
@@ -55,13 +70,6 @@ class Ui_OpcionesInforme(object):
         self.groupBox_OpcionesInforme.setGeometry(QtCore.QRect(0, 0, 1360, 700))
         self.groupBox_OpcionesInforme.setStyleSheet("background-color: rgb(255, 255, 255);\n""font: 14pt \"MS Shell Dlg 2\";")
         self.groupBox_OpcionesInforme.setObjectName("groupBox_OpcionesInforme")
-
-        #self.frame = QtWidgets.QFrame(self.groupBox_OpcionesInforme)
-        #self.frame.setGeometry(QtCore.QRect(10, 30, 1340, 640))
-        #self.frame.setStyleSheet("background-color: rgb(226, 226, 226);")
-        #self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        #self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        #self.frame.setObjectName("frame")
 
         self.frame_OpcionesInforme = QtWidgets.QFrame(self.groupBox_OpcionesInforme)
         self.frame_OpcionesInforme.setGeometry(QtCore.QRect(10, 30, 1340, 560))
@@ -116,16 +124,28 @@ class Ui_OpcionesInforme(object):
 
 ###################################################################################################################
 #FUNCIONES
-    # Función para visualizar el informe 
-    def funcVisualizarInforme(self):
-        from InputDatosPaciente import id_global_principal
-        from BusquedaPaciente import id_global_busqueda
-        
-        if id_global_principal != "":
+
+    def funcRecibirParametro(self, parametro):
+        global caso 
+        caso = parametro
+
+        # Veo desde qué ventana se inicializó 
+        global id_seleccionado
+        if caso == "Busqueda":
+            from BusquedaPaciente import id_global_busqueda, SPIEstados, SPIFranjas, PorcentajesSPI
+            id_seleccionado = id_global_busqueda
+        elif caso == "Principal":
+            from InputDatosPaciente import id_global_principal 
+            from Principal import SPIEstados, SPIFranjas, PorcentajesSPI
             id_seleccionado = id_global_principal
 
-        elif id_global_busqueda != "":
-            id_seleccionado = id_global_busqueda
+        global grafEstados, grafFranjas, grafPorcentajes
+        grafEstados = SPIEstados
+        grafFranjas = SPIFranjas
+        grafPorcentajes = PorcentajesSPI
+        
+    # Función para visualizar el informe 
+    def funcVisualizarInforme(self): 
 
         # Obtén la ruta absoluta del directorio actual
         directorio_actual = os.path.abspath(os.path.dirname(__file__))
@@ -137,6 +157,11 @@ class Ui_OpcionesInforme(object):
         ruta_relativa_informe = os.path.join(directorio_actual, nombrepdf)
 
         pdf = os.startfile(ruta_relativa_informe)
+
+        time.sleep(1)
+
+        hwnd = win32gui.GetForegroundWindow()
+        win32gui.ShowWindow(hwnd, win32con.SW_MAXIMIZE)
 
 
 ###################################################################################################################
