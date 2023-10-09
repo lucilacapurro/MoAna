@@ -442,27 +442,27 @@ class Ui_Configuraciones(object):
 
     # Funciones para agregar eventos
     def funcAgregarFarmacos(self):
-        self.comboBox_Farmaco.addItem(self.lineEdit_Farmaco.text())
+        self.comboBox_Farmaco.addItem(self.lineEdit_Farmaco.text().upper())
         global farmacos
-        farmacos.append(self.lineEdit_Farmaco.text())
+        farmacos.append(self.lineEdit_Farmaco.text().upper())
         global habilitar_teclado
         habilitar_teclado = False
         self.lineEdit_Farmaco.clear()
         habilitar_teclado = True
 
     def funcAgregarProcQuirurgico(self):
-        self.comboBox_ProcQuirurgico.addItem(self.lineEdit_ProcQuirurgico.text())
+        self.comboBox_ProcQuirurgico.addItem(self.lineEdit_ProcQuirurgico.text().upper())
         global procedimientos
-        procedimientos.append(self.lineEdit_ProcQuirurgico.text())
+        procedimientos.append(self.lineEdit_ProcQuirurgico.text().upper())
         global habilitar_teclado
         habilitar_teclado = False
         self.lineEdit_ProcQuirurgico.clear()
         habilitar_teclado = True
 
     def funcAgregarIntercurrencia(self):
-        self.comboBox_Intercurrencia.addItem(self.lineEdit_Intercurrencia.text())
+        self.comboBox_Intercurrencia.addItem(self.lineEdit_Intercurrencia.text().upper())
         global intercurrencias
-        intercurrencias.append(self.lineEdit_Intercurrencia.text())
+        intercurrencias.append(self.lineEdit_Intercurrencia.text().upper())
         global habilitar_teclado
         habilitar_teclado = False
         self.lineEdit_Intercurrencia.clear()
