@@ -37,7 +37,7 @@ for j in range(3):
     pulso_ciclo[-fall_samples:] *= np.linspace(1, 0, fall_samples)
 
     # Agrego el pulso del ciclo al pulso MP con un espacio de silencio entre ellos
-    espacio_silencio = np.zeros(int(sample_rate * 0.2))  # 2.5 s de silencio, la norma pide entre 2.5 s y 30 s
+    espacio_silencio = np.zeros(int(sample_rate * 0.2))  # 200 ms de silencio, la norma pide entre 125 ms y 250 ms
     pulso_MP = np.concatenate((pulso_MP, pulso_ciclo, espacio_silencio))
 
 # Alarma técnica de baja prioridad --> tiene 1 sólo pulso porque la norma tiene 1 o 2 --> elijo 2 para favorecer la diferenciación de prioridad de ambas 
